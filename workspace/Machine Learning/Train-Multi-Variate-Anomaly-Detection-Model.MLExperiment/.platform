@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "MLExperiment",
+    "displayName": "Train-Multi-Variate-Anomaly-Detection-Model-8K2"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "4cffa4a6-acbb-8bd9-4333-f2adda3f115d"
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/orgapp/definition/orgAppDefinition/1.0.0/schema.json",
+  "settings": {
+    "logo": "data:image/png;base64,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",
+    "theme": {
+      "background": "#ebfafc",
+      "foreground": "#242424",
+      "backgroundHover": "#effbfd",
+      "backgroundSelected": "#f3fcfd",
+      "backgroundPressed": "#f7fdfe"
+    },
+    "experienceSettings": {
+      "navigationPane": {
+        "isHidden": false,
+        "isCollapsed": false,
+        "independentPageNavigation": true
+      }
+    }
+  },
+  "elements": [
+    {
+      "elementType": "item",
+      "elementId": "0e13e45d-c3b0-4f63-b387-fc8491da2484",
+      "itemType": "Map",
+      "itemLogicalId": "b8c33892-a62c-92f2-4449-5ccee722d093",
+      "displayName": "Asset_Status"
+    },
+    {
+      "elementType": "item",
+      "elementId": "8d28bdb8-0dd1-4a68-8b87-5c42e14f710a",
+      "itemType": "KQLDashboard",
+      "itemLogicalId": "38ad0d79-ad58-be0f-4db8-ab5878394f0e",
+      "displayName": "SCADA Telemetry + Anomalies"
+    },
+    {
+      "elementType": "item",
+      "elementId": "10e264cb-2945-4293-a158-40e4b15ff9a4",
+      "itemType": "Report",
+      "itemLogicalId": "8e66b1b3-1af4-8758-4a52-71ab37875d50",
+      "displayName": "Time Series - Multivariate Anomaly Analysis"
+    },
+    {
+      "elementType": "item",
+      "elementId": "dc2a41b3-23e0-4ea0-bc07-ab870f0f3d39",
+      "itemType": "SemanticModel",
+      "itemLogicalId": "2a9467df-c39c-80f5-48cb-fc8ed50aab38",
+      "displayName": "10e264cb-2945-4293-a158-40e4b15ff9a4"
+    }
+  ]
+}

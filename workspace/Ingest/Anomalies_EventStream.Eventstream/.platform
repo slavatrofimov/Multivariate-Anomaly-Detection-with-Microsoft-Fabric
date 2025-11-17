@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Eventstream",
+    "displayName": "Anomalies_EventStream"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "5baa1c5f-1288-ba58-4d6c-7f53f9d0b67e"
+  }
+}

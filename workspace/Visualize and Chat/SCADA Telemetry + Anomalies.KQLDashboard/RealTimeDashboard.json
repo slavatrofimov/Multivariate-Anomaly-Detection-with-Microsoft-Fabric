@@ -1,0 +1,345 @@
+{
+  "schema_version": 63,
+  "pagesNavWidth": 227,
+  "autoRefresh": {
+    "enabled": true,
+    "defaultInterval": "10s"
+  },
+  "tiles": [
+    {
+      "id": "4672e373-7fc3-43e6-8075-f2debcf5f559",
+      "title": "Tag Telemetry",
+      "visualType": "line",
+      "pageId": "a3a06437-088c-4700-85d1-3005034601b2",
+      "layout": {
+        "x": 6,
+        "y": 3,
+        "width": 9,
+        "height": 13
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "37d00ab7-0532-4c5c-8b8f-0e0cb701e777"
+      },
+      "visualOptions": {
+        "multipleYAxes": {
+          "base": {
+            "id": "-1",
+            "label": "",
+            "columns": [],
+            "yAxisMaximumValue": null,
+            "yAxisMinimumValue": null,
+            "yAxisScale": "linear",
+            "horizontalLines": []
+          },
+          "additional": [],
+          "showMultiplePanels": false
+        },
+        "hideLegend": false,
+        "legendLocation": "bottom",
+        "xColumnTitle": "",
+        "xColumn": null,
+        "yColumns": null,
+        "seriesColumns": null,
+        "xAxisScale": "linear",
+        "verticalLine": "",
+        "crossFilterDisabled": false,
+        "drillthroughDisabled": false,
+        "crossFilter": [],
+        "drillthrough": []
+      }
+    },
+    {
+      "id": "c76eeef0-2f1b-427e-add1-58494bb15576",
+      "title": "Multivariate Anomalies by Severity",
+      "visualType": "column",
+      "pageId": "a3a06437-088c-4700-85d1-3005034601b2",
+      "layout": {
+        "x": 15,
+        "y": 0,
+        "width": 9,
+        "height": 10
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "05c068cf-f518-448d-a74c-dcc26d1444e8"
+      },
+      "visualOptions": {
+        "multipleYAxes": {
+          "base": {
+            "id": "-1",
+            "label": "",
+            "columns": [],
+            "yAxisMaximumValue": null,
+            "yAxisMinimumValue": null,
+            "yAxisScale": "linear",
+            "horizontalLines": []
+          },
+          "additional": [],
+          "showMultiplePanels": false
+        },
+        "hideLegend": false,
+        "legendLocation": "bottom",
+        "xColumnTitle": "",
+        "xColumn": "timestamp",
+        "yColumns": null,
+        "seriesColumns": null,
+        "xAxisScale": "linear",
+        "verticalLine": "",
+        "crossFilterDisabled": false,
+        "drillthroughDisabled": false,
+        "crossFilter": [],
+        "drillthrough": []
+      }
+    },
+    {
+      "id": "a416f585-158f-451b-9e5d-1d2e503feb56",
+      "title": "Multivariate Anomalies Details",
+      "visualType": "table",
+      "pageId": "a3a06437-088c-4700-85d1-3005034601b2",
+      "layout": {
+        "x": 15,
+        "y": 10,
+        "width": 9,
+        "height": 6
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "3491b681-2584-496a-811f-9f19f02b099c"
+      },
+      "visualOptions": {
+        "table__enableRenderLinks": true,
+        "colorRulesDisabled": true,
+        "colorStyle": "light",
+        "crossFilterDisabled": false,
+        "drillthroughDisabled": false,
+        "crossFilter": [],
+        "drillthrough": [],
+        "table__renderLinks": [],
+        "colorRules": []
+      }
+    },
+    {
+      "id": "9763b402-f526-4a5f-b06e-a27e4cec26a1",
+      "title": "Selected Asset",
+      "visualType": "card",
+      "pageId": "a3a06437-088c-4700-85d1-3005034601b2",
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 15,
+        "height": 3
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "4c0ab9b1-5877-4709-bb27-98c6923c8d22"
+      },
+      "visualOptions": {
+        "multiStat__textSize": "small",
+        "multiStat__valueColumn": null,
+        "colorRulesDisabled": false,
+        "colorStyle": "light",
+        "colorRules": []
+      }
+    },
+    {
+      "id": "920b2348-a48a-4d6f-974b-b421d7d826eb",
+      "title": "Asset Contextualization",
+      "visualType": "table",
+      "pageId": "a3a06437-088c-4700-85d1-3005034601b2",
+      "layout": {
+        "x": 0,
+        "y": 3,
+        "width": 6,
+        "height": 13
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "33666ec8-1532-4404-988a-7e8fbb041fec"
+      },
+      "visualOptions": {
+        "table__enableRenderLinks": true,
+        "colorRulesDisabled": true,
+        "colorStyle": "light",
+        "crossFilterDisabled": false,
+        "drillthroughDisabled": false,
+        "crossFilter": [],
+        "drillthrough": [],
+        "table__renderLinks": [],
+        "colorRules": []
+      }
+    }
+  ],
+  "baseQueries": [],
+  "parameters": [
+    {
+      "kind": "duration",
+      "id": "d72cd612-e605-4480-baa9-df152c55ce5a",
+      "displayName": "Time range",
+      "description": "",
+      "beginVariableName": "_startTime",
+      "endVariableName": "_endTime",
+      "defaultValue": {
+        "kind": "dynamic",
+        "count": 1,
+        "unit": "hours"
+      },
+      "showOnPages": {
+        "kind": "all"
+      }
+    },
+    {
+      "kind": "string",
+      "id": "75a11daf-a4b0-45df-ab5f-a1ff9cfc8126",
+      "displayName": "Asset",
+      "description": "",
+      "variableName": "_asset",
+      "selectionType": "scalar",
+      "includeAllOption": false,
+      "defaultValue": {
+        "kind": "value",
+        "value": "8K2"
+      },
+      "dataSource": {
+        "kind": "query",
+        "columns": {
+          "value": "AssetID"
+        },
+        "queryRef": {
+          "kind": "query",
+          "queryId": "632ff9e4-ce6c-47a7-99de-502b155ab3a3"
+        }
+      },
+      "showOnPages": {
+        "kind": "all"
+      }
+    },
+    {
+      "kind": "string",
+      "id": "69c69ed3-54d2-460e-bcde-e53c5d69c617",
+      "displayName": "Tags",
+      "description": "",
+      "variableName": "_tags",
+      "selectionType": "array",
+      "includeAllOption": false,
+      "defaultValue": {
+        "kind": "query-result"
+      },
+      "dataSource": {
+        "kind": "query",
+        "columns": {
+          "value": "tag",
+          "label": "label"
+        },
+        "queryRef": {
+          "kind": "query",
+          "queryId": "f592e200-eed8-43a0-baaa-2f83b6be5412"
+        }
+      },
+      "showOnPages": {
+        "kind": "all"
+      }
+    }
+  ],
+  "dataSources": [
+    {
+      "kind": "kusto-trident",
+      "scopeId": "kusto-trident",
+      "clusterUri": "",
+      "database": "7e5f836f-fbd4-98a5-4b93-408b3d6c2c84",
+      "name": "MultivariateAnomalyDetectionEH",
+      "id": "05aa618a-2f27-44bd-b7a4-11bed8435454",
+      "workspace": "00000000-0000-0000-0000-000000000000",
+      "queryResultsCacheMaxAge": 60000
+    }
+  ],
+  "pages": [
+    {
+      "name": "Telemetry + Anomalies",
+      "id": "a3a06437-088c-4700-85d1-3005034601b2"
+    }
+  ],
+  "queries": [
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "05aa618a-2f27-44bd-b7a4-11bed8435454"
+      },
+      "text": "ScadaTelemetry\n| where timestamp between (_startTime .. _endTime) and tag in (_tags)\n| summarize value = avg(value) by tag, bin(timestamp, 10s)",
+      "id": "37d00ab7-0532-4c5c-8b8f-0e0cb701e777",
+      "usedVariables": [
+        "_endTime",
+        "_startTime",
+        "_tags"
+      ]
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "05aa618a-2f27-44bd-b7a4-11bed8435454"
+      },
+      "text": "AssetAnomaliesMVAD\n| where timestamp between (_startTime .. _endTime) and asset == _asset\n| project timestamp, severity",
+      "id": "05c068cf-f518-448d-a74c-dcc26d1444e8",
+      "usedVariables": [
+        "_asset",
+        "_endTime",
+        "_startTime"
+      ]
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "05aa618a-2f27-44bd-b7a4-11bed8435454"
+      },
+      "text": "AssetAnomaliesMVAD\n| where timestamp between (_startTime .. _endTime) and asset == _asset and is_anomaly\n| project-away is_anomaly",
+      "id": "3491b681-2584-496a-811f-9f19f02b099c",
+      "usedVariables": [
+        "_asset",
+        "_endTime",
+        "_startTime"
+      ]
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "05aa618a-2f27-44bd-b7a4-11bed8435454"
+      },
+      "text": "Assets\r\n| where AssetID  == _asset\r\n| project strcat(AssetID, \": \", AssetCode, \" - \", AssetType, \" (\", Manufacturer, \" - \", Model, \")\")",
+      "id": "4c0ab9b1-5877-4709-bb27-98c6923c8d22",
+      "usedVariables": [
+        "_asset"
+      ]
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "05aa618a-2f27-44bd-b7a4-11bed8435454"
+      },
+      "text": "Assets\n| where AssetID  == _asset\n| evaluate narrow()\n| project Attribute = Column, Value",
+      "id": "33666ec8-1532-4404-988a-7e8fbb041fec",
+      "usedVariables": [
+        "_asset"
+      ]
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "05aa618a-2f27-44bd-b7a4-11bed8435454"
+      },
+      "text": "Assets | project AssetID",
+      "id": "632ff9e4-ce6c-47a7-99de-502b155ab3a3",
+      "usedVariables": []
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "05aa618a-2f27-44bd-b7a4-11bed8435454"
+      },
+      "text": "TagMetadata\n| where asset  == _asset\n| project tag, label = strcat(tag, ' (', metric, ')')\n| order by tag asc ",
+      "id": "f592e200-eed8-43a0-baaa-2f83b6be5412",
+      "usedVariables": [
+        "_asset"
+      ]
+    }
+  ]
+}

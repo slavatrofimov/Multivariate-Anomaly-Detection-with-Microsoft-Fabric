@@ -1,0 +1,28 @@
+{
+  "queryset": {
+    "version": "1.0.0",
+    "dataSources": [
+      {
+        "id": "6086fdb3-e825-48e5-927e-59f0b7a6e0bf",
+        "clusterUri": "https://trd-xarh0n5kkf5xbfcwyc.z4.kusto.fabric.microsoft.com",
+        "type": "Fabric",
+        "databaseItemId": "3d6c2c84-408b-4b93-98a5-fbd47e5f836f",
+        "databaseItemName": "MultivariateAnomalyDetectionEH"
+      }
+    ],
+    "tabs": [
+      {
+        "id": "577a82b4-8e91-432b-81b8-2f00a63d0033",
+        "content": "let AssetAnomalies = \nAssetAnomaliesMVAD\n| where timestamp >= ago(2hours) and is_anomaly\n| summarize anomaly_count = count(), max_severity = max(severity) by asset;\nAssets\n| project AssetID, AssetType, Manufacturer, Model, Latitude, Longitude = -Longitude\n| join kind=leftouter  AssetAnomalies on $left.AssetID == $right.asset\n| project-away asset\n\n",
+        "title": "Map_Assets",
+        "dataSourceId": "6086fdb3-e825-48e5-927e-59f0b7a6e0bf"
+      },
+      {
+        "id": "c7b3bdde-e42f-47ac-90ee-31d7a6e4fb64",
+        "content": "VehicleTelemetryRaw\n| summarize arg_max(timestamp, lat, lon) by VehicleID\n",
+        "title": "Map_Vehicles",
+        "dataSourceId": "6086fdb3-e825-48e5-927e-59f0b7a6e0bf"
+      }
+    ]
+  }
+}

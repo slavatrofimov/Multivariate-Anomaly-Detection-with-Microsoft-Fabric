@@ -1,0 +1,143 @@
+table DynamicMVAnomalies
+	lineageTag: fd9948d0-4a2b-4f4d-932e-51cde4b3565c
+
+	measure 'MVAD Chart Title' =
+			
+			VAR _asset = SELECTEDVALUE(Tags[asset])
+			RETURN IF(ISBLANK(_asset), "Multivariate anomaly chart is disabled when tags from multiple assets are selected", "Multivariate anomalies for asset: " & _asset)
+		lineageTag: d66390ec-604e-4439-b776-81f1770fc83e
+
+	column asset
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: bf66275a-a7d5-42cf-a942-78b542268b4f
+		summarizeBy: none
+		sourceColumn: asset
+
+		annotation SummarizationSetBy = Automatic
+
+	column timestamp
+		dataType: dateTime
+		formatString: General Date
+		sourceProviderType: datetimeoffset
+		lineageTag: 4c9ca955-900e-4518-a530-f99dd01fa3e1
+		summarizeBy: none
+		sourceColumn: timestamp
+
+		annotation SummarizationSetBy = Automatic
+
+	column score
+		dataType: double
+		sourceProviderType: double
+		lineageTag: 36786cb7-4157-4ce7-87ef-c294dcf24723
+		summarizeBy: sum
+		sourceColumn: score
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column severity
+		dataType: double
+		sourceProviderType: double
+		lineageTag: db3454c0-99ee-4c17-b6d8-ffc763447521
+		summarizeBy: sum
+		sourceColumn: severity
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column anomaly_count
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: f7ee8ddc-0a49-479c-b6af-7f17d93385fe
+		summarizeBy: sum
+		sourceColumn: anomaly_count
+
+		annotation SummarizationSetBy = Automatic
+
+	column constant
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: 8aa79ee6-bb74-4ec4-8993-bf25071ca188
+		summarizeBy: sum
+		sourceColumn: constant
+
+		annotation SummarizationSetBy = Automatic
+
+	partition DynamicMVAnomalies = m
+		mode: directQuery
+		source = ```
+				let
+				    _tags = 
+				    if 
+				    //check to see if the parameter is a list
+				      Type.Is(
+				        Value.Type(_tag), 
+				        List.Type
+				      ) then 
+				        //if it is a list
+				        let
+				          //add single quotes around each value in the list
+				          AddSingleQuotes = List.Transform(
+				              _tag, 
+				              each "'" & _ & "'"
+				            ),
+				          //then turn it into a comma-delimited list
+				          DelimitedList = Text.Combine(
+				              AddSingleQuotes, 
+				              ","
+				            )
+				        in
+				          DelimitedList
+				    else 
+				      //if the parameter isn't a list
+				      //just add single quotes around the parameter value
+				      "'" & _tag & "'",
+				    anchor_date = if _anchor_date = #datetime(9999, 12, 31, 0, 0, 0) then "now()" else "todatetime('" &DateTime.ToText(_anchor_date) & "')",
+				    relative_time_period = Text.AfterDelimiter(_relative_time_period, " - "),
+				    Query = "
+				    let relative_time = '" & relative_time_period & "';
+				    let anchor_date = " & anchor_date & ";
+				    let start = todatetime('" & DateTime.ToText(_start_date) & "');
+				    let end = todatetime('" & DateTime.ToText(_end_date) & "');
+				    let _start = iff(relative_time == '*custom*', todatetime(start), anchor_date - totimespan(relative_time));
+				    let _end = iff(relative_time == '*custom*', todatetime(end), anchor_date);     
+				    let bin_timespan_label = toscalar(get_bin_timespan('" & relative_time_period & "', '" & DateTime.ToText(_start_date) & "', '" & DateTime.ToText(_end_date) & "', '" & _bin_timespan & "', " & Number.ToText(_max_bins) & "));
+				    let bin_timespan = totimespan(bin_timespan_label);      
+				    let is_one_asset = toscalar(
+				    TagMetadata
+				    | where tag in (" & _tags & ")
+				    | summarize asset_count = count_distinct(asset)
+				    | project asset_count == 1);
+				    let _asset = toscalar(
+				    TagMetadata
+				    | where is_one_asset
+				    | where tag in (" & _tags & ")    
+				    | project asset 
+				    | take 1
+				    );
+				    let _bookends = materialize(
+				    ScadaTelemetry 
+				    | where is_one_asset
+				    | where timestamp  between (_start .. _end) and tag in (" & _tags & ")
+				    | summarize actual_start = min(timestamp), actual_end = max(timestamp)
+				    );
+				    AssetAnomaliesMVAD
+				    | where is_one_asset
+				    | where timestamp  between (_start .. _end) and asset  == _asset and is_anomaly and severity >= " & Number.ToText(_mvad_severity_threshold) & "
+				    | union (_bookends | project constant = 0, timestamp = actual_start, asset = _asset, score = double(null), severity = double(null))
+				    | union (_bookends | project constant = 0, timestamp = actual_end, asset = _asset, score = double(null), severity = double(null))
+				    | summarize score = max(score), severity=max(severity), anomaly_count = count(), constant = max(constant) by timestamp = bin(timestamp, bin_timespan), asset",
+				    Source = AzureDataExplorer.Contents("https://trd-xarh0n5kkf5xbfcwyc.z4.kusto.fabric.microsoft.com", "MultivariateAnomalyDetectionEH", Query, [MaxRows=null, MaxSize=null, NoTruncate=null, AdditionalSetStatements=null])
+				in
+				    Source
+				```
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

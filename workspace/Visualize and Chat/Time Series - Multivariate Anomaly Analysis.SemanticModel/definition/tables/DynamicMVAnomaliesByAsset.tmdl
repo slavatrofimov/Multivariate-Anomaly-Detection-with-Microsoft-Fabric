@@ -1,0 +1,101 @@
+table DynamicMVAnomaliesByAsset
+	lineageTag: ee7b60d2-e908-4d7f-85ae-bb8b06aab342
+
+	column timestamp
+		dataType: dateTime
+		formatString: General Date
+		sourceProviderType: datetimeoffset
+		lineageTag: 4ccdd90f-69e8-4cc8-ba52-1a5981077dda
+		summarizeBy: none
+		sourceColumn: timestamp
+
+		annotation SummarizationSetBy = Automatic
+
+	column asset
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 1a987251-cc35-4455-b59b-999721b0604a
+		summarizeBy: none
+		sourceColumn: asset
+
+		annotation SummarizationSetBy = Automatic
+
+	column score
+		dataType: double
+		sourceProviderType: double
+		lineageTag: 2d16e18c-16f7-48b1-af48-f47aa6254661
+		summarizeBy: sum
+		sourceColumn: score
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column severity
+		dataType: double
+		sourceProviderType: double
+		lineageTag: b34f4922-65dc-423d-8374-ad610f29b556
+		summarizeBy: sum
+		sourceColumn: severity
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column anomaly_count
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: 51325dc9-f523-46b2-82ed-d2238c09d6e5
+		summarizeBy: sum
+		sourceColumn: anomaly_count
+
+		annotation SummarizationSetBy = Automatic
+
+	column constant
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: c2774dd4-b4ae-4b41-a1c5-1943909c5a20
+		summarizeBy: sum
+		sourceColumn: constant
+
+		annotation SummarizationSetBy = Automatic
+
+	partition DynamicMVAnomaliesByAsset = m
+		mode: directQuery
+		source = ```
+				let
+				    anchor_date = if _anchor_date = #datetime(9999, 12, 31, 0, 0, 0) then "now()" else "todatetime('" &DateTime.ToText(_anchor_date) & "')",
+				    relative_time_period = Text.AfterDelimiter(_relative_time_period, " - "),
+				    Query = "
+				    let relative_time = '" & relative_time_period & "';
+				    let anchor_date = " & anchor_date & ";
+				    let start = todatetime('" & DateTime.ToText(_start_date) & "');
+				    let end = todatetime('" & DateTime.ToText(_end_date) & "');
+				    let _start = iff(relative_time == '*custom*', todatetime(start), anchor_date - totimespan(relative_time));
+				    let _end = iff(relative_time == '*custom*', todatetime(end), anchor_date);
+				    let bin_timespan_label = toscalar(get_bin_timespan('" & relative_time_period & "', '" & DateTime.ToText(_start_date) & "', '" & DateTime.ToText(_end_date) & "', '" & _bin_timespan & "', " & Number.ToText(_max_bins) & "));
+				    let bin_timespan = totimespan(bin_timespan_label);             
+				    let _asset = '" &_asset &"';    
+				    let _bookends = materialize(
+				    TagMetadata
+				    | where asset == ('" & _asset & "')
+				    | join kind = inner ScadaTelemetry on tag
+				    | where timestamp  between (_start .. _end)
+				    | summarize actual_start = min(timestamp), actual_end = max(timestamp)
+				    );
+				    AssetAnomaliesMVAD
+				    | where timestamp  between (_start .. _end) and asset  == _asset and is_anomaly and severity >= " & Number.ToText(_mvad_severity_threshold) & "
+				    | union (_bookends | project constant = 0, timestamp = actual_start, asset = _asset, score = double(null), severity = double(null))
+				    | union (_bookends | project constant = 0, timestamp = actual_end, asset = _asset, score = double(null), severity = double(null))
+				    | summarize score = max(score), severity=max(severity), anomaly_count = count(), constant = max(constant) by timestamp = bin(timestamp, bin_timespan), asset",
+				    Source = AzureDataExplorer.Contents("https://trd-xarh0n5kkf5xbfcwyc.z4.kusto.fabric.microsoft.com", "MultivariateAnomalyDetectionEH", Query, [MaxRows=null, MaxSize=null, NoTruncate=null, AdditionalSetStatements=null])
+				in
+				    Source
+				```
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
