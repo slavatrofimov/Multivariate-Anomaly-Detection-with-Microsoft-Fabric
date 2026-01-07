@@ -1,6 +1,6 @@
-# Real-Time Grid Intelligence with Microsoft Fabric
+# Multivariate Anomaly Detection with Microsoft Fabric
 
-A comprehensive solution accelerator for power utilities to monitor and optimize electrical grids using Advanced Metering Infrastructure (AMI) data with Microsoft Fabric's real-time intelligence capabilities.
+A comprehensive solution accelerator for performing advanced anomaly detection using data from multiple variables with Microsoft Fabric's real-time intelligence capabilities. 
 
 ## 📋 Table of Contents
 
@@ -15,72 +15,76 @@ A comprehensive solution accelerator for power utilities to monitor and optimize
 
 ## 🎯 Overview
 
-This solution accelerator demonstrates how power utilities can leverage Microsoft Fabric to build a real-time grid intelligence platform. It processes streaming telemetry from smart meters (AMI), vehicle tracking, and weather data to provide actionable insights for grid operations, outage management, and infrastructure optimization.
+This solution accelerator demonstrates how industrial enterprises, energy companies, logistics companies and companies in other industries can leverage Microsoft Fabric to monitor and maintain high-value, densely-instrumented assets. This solution processes telemetry data from industrial equipment, detects subtle anomalies using advanced multivariate anomaly detection algorithms, sends automated alerts and provides comprehensive data visualization capabilities for time series data to facilitate diagnostics and root cause analysis.
 
-The solution simulates a realistic utility grid environment with:
-- **Smart meter telemetry** from thousands of meters reporting power consumption, voltage, current, and power quality metrics
+The solution simulates a realistic industrial environment with:
+- **Sensor telemetry** from two simulated centrifugal compressors, each instrumented with 25 sensors measuring speed, temperature, pressure, axial displacement and vibration.
 - **Vehicle tracking** for field service crews and mobile assets
-- **Weather data integration** to correlate environmental conditions with grid performance
 - **Real-time intelligence** using KQL (Kusto Query Language) for immediate operational visibility
+- **Anomaly detection** by leveraging multivariate anomaly detection algorithms that enable predictive and conditional maintenance
 - **Advanced visualizations** through Power BI reports and real-time dashboards
 
 ### Business Value
 
-- **Proactive Outage Management**: Detect and respond to outages in real-time with correlated meter and weather data
-- **Grid Optimization**: Identify power quality issues, load imbalances, and infrastructure stress points
+- **Immediate Operational Visibility**: Monitor equipment statuses in real time
+- **Prevent Failures and Outages**: Detect problems early and enable predictive and conditional maintenance
 - **Operational Efficiency**: Track field service vehicles and optimize crew dispatch
-- **Predictive Maintenance**: Detect meter failures, battery issues, and tamper events before they escalate
+
+### Demonstration Video
+[![Multivariate Anomaly Detection Demo Video](/media/MVAD%20Demo%20Video%20Screenshot.png)](https://youtu.be/b-LAZZHX20A)
+
 
 ## ✨ Key Features
 
 - **🚀 One-Click Deployment**: Automated installation notebook deploys all Fabric items with dependency management
-- **📊 Real-Time Streaming**: Azure Event Hubs ingestion with Eventstreams for AMI, vehicle, and weather data
-- **🔍 Advanced Analytics**: KQL queries for time-series analysis, anomaly detection, and correlation
+- **📊 Real-Time Streaming**: Eventstream ingestion for industrial sensor telemetry and vehicle telemetry
+- **🔍 Advanced Analytics**: KQL queries and machine learning models for time-series analysis, anomaly detection, and correlation
 - **📈 Interactive Dashboards**: Pre-built Power BI reports and KQL dashboards for operational monitoring
-- **🎭 Realistic Simulation**: Comprehensive data simulators with seasonal patterns, outages, and failure scenarios
+- **🎭 Realistic Simulation**: Comprehensive data simulators based on real-world data
 - **🏗️ Scalable Architecture**: Built on Microsoft Fabric's lakehouse and eventhouse architecture
-- **🤖 AI-Ready**: Includes Fabric Data Agent integration for natural language queries and incorporates Smart Narratives to facilitate interpretation of Power BI reports
+
 
 ## 🏛️ Solution Architecture
 
 ### High-Level Architectural Diagram
-![High-Level Solution Architecture](/media/RTI-Grid-Intelligenec-Solution-Diagram.png)
+![High-Level Solution Architecture](/media/Anomaly%20Detection%20Architecture.png)
 
 Note that this diagram represents a hypothetical real-world solution. This solution accelerator replaces source systems with Spark notebooks that generate synthetic data.
 
 ### Component Details
 
 #### Data Generation
-- **AMI Simulators**: Generate realistic smart meter telemetry with seasonal/daily patterns, failures, and outage scenarios
+- **Industrial Telemetry Simulator**: Generate realistic industrial telemetry (using real-world data that is converted into a simulated stream)
 - **Vehicle Simulator**: Simulate routes for field service vehicles with speed and heading data
-- **Storm Simulator**: Create weather events that trigger correlated grid outages
 
 #### Ingestion
 - **Eventstreams**: Fabric-native streaming connectors with built-in Event Hub endpoints.
 
 #### Storage
 - **Eventhouse (KQL Database)**: Hot path for real-time queries with minimal latency
-- **Lakehouse (Delta Tables)**: Storage for reference data with seamles integration with the eventhouse
+- **Lakehouse (Delta Tables)**: Storage for reference data
+
+#### Machine Learning
+- **Spark Notebooks** are used to train machine learning models using specialized multivariate anomaly detection algorithms.
+- **Experiments** are used to track machine learning runs using MLFlow.
+- **Machine Learning Models** are registered and used for inferencing.
 
 #### Analytics
 - **KQL Queries**: Time-series analysis, aggregations, and correlation queries
 - **Power BI Semantic Models**: DirectQuery mode connection to the eventhouse for real-time reporting
-- **Data Agent**: AI-powered natural language interface to query grid data
 
 #### Visualization
 - **Maps**: Real-time visualization of streaming and reference data.
 - **Real-Time Dashboards**: Real-time visibility for key operational metrics.
 - **Power BI Reports**: Time-series analysis, aggregations, and self-service analytics.
 
-
 #### Action
-- **Activator**: Event data is continuously analyzed and automated notification or actions are initiated when triger conditions are satisfied.
+- **Activator**: Event data is continuously analyzed and automated notification or actions are initiated when trigger conditions are satisfied.
 
 ## 📦 Prerequisites
 
 ### Required
-- **Microsoft Fabric Capacity**: F16 or higher recommended (Power BI Premium capacity is also supported). Note: this solution includes AI features that are not available on a Fabric Trial capacity. While you will be albe to deploy the solution, to a workspace on a Trial capacity, some portions of this solution will not work properly.
-- **Automatic Page Refresh enabled**: Fabric and Power BI capacities must be configured to allow frequent automatic page refresh. Certain reports included in this solution are configured to refresh pages every 2 seconds to visualize streaming data. [Ensure that your capacity settings allow page refresh with this frequency](https://learn.microsoft.com/en-us/power-bi/create-reports/desktop-automatic-page-refresh#restrictions-on-refresh-intervals).
+- **Microsoft Fabric Capacity**: F16 or higher recommended (Power BI Premium capacity is also supported). Note: this solution includes AI features that are not available on a Fabric Trial capacity. While you will be able to deploy the solution, to a workspace on a Trial capacity, some portions of this solution will not work properly.
 - **Fabric Workspace**: A workspace with contributor or admin permissions
 - **Power BI License**: Power BI Pro or Power BI Premium Per User license.
 
@@ -88,6 +92,7 @@ Note that this diagram represents a hypothetical real-world solution. This solut
 ### Recommended Knowledge
 - Basic understanding of Microsoft Fabric concepts (lakehouses, eventhouses, eventstreams)
 - Familiarity with KQL (Kusto Query Language) for data exploration (optional)
+- Familiarity with machine learning and data science using Spark
 - Power BI experience for customizing reports (optional)
 
 ## 🚀 Installation Instructions
@@ -95,7 +100,7 @@ Note that this diagram represents a hypothetical real-world solution. This solut
 ### Step 1: Create Fabric Workspace
 1. Log in to [Microsoft Fabric](https://app.fabric.microsoft.com)
 2. Click **Workspaces** → **+ New workspace**
-3. Name your workspace (e.g., "Grid Intelligence")
+3. Name your workspace (e.g., "Multivariate Anomaly Detection")
 4. Assign a Fabric capacity or trial capacity
 5. Click **Apply**
 
@@ -116,41 +121,34 @@ The installer will:
 - ✅ Deploy all Fabric items (Eventhouses, Lakehouses, Eventstreams, Notebooks, Reports)
 - ✅ Configure item dependencies and relationships
 - ✅ Import sample data files
+- ✅ Perform post-deployment configuration tasks
 - ✅ Configure credentials and refresh all semantic models
 
 
-### Step 4: Generate Reference Data
+### Step 4: Enable Python plugin on the Eventhouse
 
-1. Navigate to the **Simulation** folder in your workspace
-2. Open the **AMI Reference Data Simulation** notebook
-3. Click **Run all**
+1. Navigate to the **MultivareAnomalyDetectionEH** eventhouse in your workspace.
+2. Click on **Plugins** and enable the *Python 3.11.7 (preview)* plugin as illustrated below.
+![Enable Python Plugin](/media/Enable%20Python%20Extension.png)
 
-This generates:
-- Meter metadata 
-- Network topology (substations, feeder lines, transformers)
 
 
 ## 📖 Usage Instructions
 
 ### Running Simulations
 
-#### 1. Start AMI Telemetry Simulation
+#### 1. Start Compressor Event Simulator
 
 ```
-Location: Simulation/AMI Telemetry and Outage Simulation
-Duration: 2 hours (configurable)
-Data Generated: ~120 batches of telemetry + outage events
+Location: Simulation/Compressor Event Simulator
+Duration: ~10 hours (simulation will end once sample data has been streamed)
+Data Generated: batches of industrial telemetry sent out every ~1 second
 ```
 
-1. Open the **AMI Telemetry and Outage Simulation** notebook
+1. Open the **Compressor Event Simulator** notebook
 2. Click **Run all**
-3. Monitor progress in the output (status printed every minute)
+3. Monitor progress in the output
 
-**Data Generated**:
-- Power consumption (kW, voltage (V), current (A), etc.)
-- Power quality metrics (power factor, THD, etc.)
-- Meter health indicators (battery, tamper detection)
-- Outage events (last gasp, restoration)
 
 #### 2. Start Vehicle Tracking Simulation
 
@@ -164,91 +162,50 @@ Data Generated: GPS coordinates and operational vehicle telemetry every 10 secon
 2. Click **Run all**
 3. Vehicles will follow predefined routes with realistic GPS tracking
 
-#### 3. Start Storm Simulation
-
-```
-Location: Simulation/Storm Simulation
-Duration: approximately 2 minutes (triggers outages)
-Data Generated: geospatial data representing the progression of a severe thunderstorm through the service area.
-```
-
-1. Open the **Storm Simulation** notebook
-2. Click **Run all**
-3. Observe progression of the storm by opening the **Meter Analytics** report and navigating to the **Meter Outages + Weather** page. Note that storm progression is accelerated -- it will take ~2 minutes for the storm to pass through the service area.
-4. Storm events will trigger correlated meter outages in the AMI simulation (when **AMI Telemetry and Outage Simulation** notebook is running)
-
-
 ### Viewing Reports and Dashboards
 
 #### Maps
 
-**Service Area Map**
-- Visualize the health of meters across the service area
-- Visualize weather data
+**Asset Status Map**
+- Visualize the health of assets across the enterprise
 - Visualize locations of service vehicles
-- Diplay location of electrical transmission lines
 
-Access: Navigate to **Visualize and Chat** → **Service Area Map**
+Access: Navigate to **Visualize and Chat** → **Asset Status**
 
 #### Real Time Dashboards
 
-**Meter Statuses Dashboard**
-- Real-time meter health monitoring
-- Outage maps and timelines
-- Power quality monitoring
+**SCADA Telemetry + Anomalies Dashboard**
+- Real-time asset monitoring
+- Sensor telemetry monitoring
 
-Access: Navigate to **Visualize and Chat** → **Meter Statuses**
+Access: Navigate to **Visualize and Chat** → **SCADA Telemetry + Anomalies**
 
-**Vehicle Tracking Dashboard**
-- Live vehicle locations on map
-- Route history and playback
-- Speed and vehicle telemetry metrics
-
-Access: Navigate to **Visualize and Chat** → **Vehicle Tracking**
 
 #### Power BI Reports
 
-**Meter Exploration Report**
-- Customer consumption patterns
-- Recent trends in power consumption and quality metrics
-
-**Meter Telemetry - Time Series Analysis**
-- Multi-meter comparison views
-- Flexible time series analysis of metrics from individual meters
-- Anomaly detection
+**Time Series - Multivariate Anomaly Analysis**
+- Flexible time series analysis of data from multiple sensors
+- Single-variable anomaly detection for each time series
+- Multivariate anomaly detection
+- Diagnostic capabilities for multivariate data
 - Descriptive statistics and correlation analysis between selected tags
 
-**Vehicle Telemetry - Time Series Analysis**
-- Fleet performance metrics
-- Vehicle health and performance monitoring
-
-### Using the Data Agent (AI Copilot)
-
-The **Meter_Data_Agent** enables natural language queries:
-
-Example queries:
-- "Show me all meters with outages in the last hour"
-- "What transformer has the highest number of meters impacted by an ougage?"
-- "Which vehicle is closest to transformer XYZ?"
-- "What's the average power consumption by feeder line and service class?"
-- "Which meters have low battery warnings?"
-
-Access: Navigate to **Visualize and Chat** → **Meter_Data_Agent**
 
 ### Using Activator (for automated alerts and actions)
 
-The **Meter Activator** enables automatic alerts when trigger conditions are met.
+The **Multivariate Anomaly Activator** enables automatic alerts when trigger conditions are met.
 
-By default, the Activator is configured to generate alerts when the level of total harmonic distortions exceeds a specified threshold and stays at that level for an extended period of time. You may configure other triggers using the no-code authoring interface.
+By default, the Activator is configured to generate alerts when multiple moderate severity multivariate anomalies have been detected or when individual high-severity anomalies have been detected. You may configure other triggers using the no-code authoring interface.
 
-Access: Navigate to **Act** → **Meter Activator**
+Access: Navigate to **Act** → **Multivariate Anomaly Activator**
 
 ## 🔧 Troubleshooting
 If you encounter challenges with the solution, consider the following steps:
 1. Ensure that all pre-requisites have been fully satisfied
 1. Ensure that all installation steps have been completed in order
+1. Ensure that you have manually enabled the Python plugin on your Eventhouse (as described in the installation instructions above.)
 1. Ensure that simulation notebooks are actively running -- it may take a few minutes to simulated data generators to start producing simulated events.
-1. Ensure that simulation notebooks are actively running -- by default, meter and vehicle simulations will time out and terminate after 2 hours. Storm simulation will terminate after 2 minutes.
+
 
 ### Getting Help
 
@@ -256,36 +213,8 @@ If you encounter challenges with the solution, consider the following steps:
 - **Community Forums**: [Fabric Community](https://community.fabric.microsoft.com/)
 - **GitHub Issues**: Report bugs or request features in this repository
 
-## 🤝 Contributing
-
-Contributions are welcome! Please follow these guidelines:
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-### Contribution Ideas
-- Additional simulation scenarios (e.g., solar generation, EV charging)
-- New dashboard templates
-- Performance optimizations
-- Documentation improvements
-- Sample KQL queries
-
 ## 📄 License
 
 This project is provided as-is for demonstration and educational purposes. 
-
-
-## Acknowledgments
-
-Built with Microsoft Fabric's powerful real-time intelligence platform:
-- **Eventstreams**: For seamless data ingestion
-- **Eventhouse**: For lightning-fast KQL queries
-- **Lakehouse**: For unified data storage
-- **Power BI**: For dynamic visualizations
-- **Maps**: For stunning real-time geospatial visualizations
-- **Activator**: For intelligent alerting
 
 ---
