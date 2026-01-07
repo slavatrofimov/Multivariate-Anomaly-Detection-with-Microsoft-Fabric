@@ -1,0 +1,12 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Notebook",
+    "displayName": "Import Sample Data",
+    "description": ""
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "a12d6eb0-4074-91f5-4415-27d12f90f8b0"
+  }
+}

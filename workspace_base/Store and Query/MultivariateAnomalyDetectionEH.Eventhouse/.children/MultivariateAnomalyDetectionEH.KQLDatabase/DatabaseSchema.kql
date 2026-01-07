@@ -1,0 +1,208 @@
+// KQL script
+// Use management commands in this script to configure your database items, such as tables, functions, materialized views, and more.
+
+
+.create-merge table ScadaTelemetry (tag:string, timestamp:datetime, value:real) 
+.create-merge table AssetAnomaliesMVAD (is_anomaly:bool, asset:string, timestamp:datetime, score:real, severity:real, interpretation:dynamic) 
+.create-merge table ScadaTelemetryRaw (metrics:dynamic, EventProcessedUtcTime:datetime, PartitionId:long, EventEnqueuedUtcTime:datetime) 
+.create-merge table AssetAnomaliesMVADRaw (anomalies:dynamic, EventProcessedUtcTime:datetime, PartitionId:long, EventEnqueuedUtcTime:datetime) 
+.create-merge table AssetAnomaliesMVADInterpretation (is_anomaly:bool, asset:string, timestamp:datetime, score:real, severity:real, tag:string, contribution_score:real, correlation_changes:dynamic) 
+.create-merge table TagMetadata (asset:string, tag:string, metric:string, component:string) 
+.create-merge table AssetMVADFeatures (tag:string, ordinal:int, asset:string) 
+.create-merge table AssetMVADModels (asset:string, model_uri:string, sliding_window:long, effective_date:datetime) 
+.create-merge table VehicleTelemetryRaw (EventID:guid, JourneyID:string, VehicleID:string, DriverID:dynamic, EventCategoryID:string, timestamp:datetime, odometer:real, tire_pressure:dynamic, lat:real, lon:real, vehicle_speed:real, engine_rpm:real, transmission_gear_position:int, gear_lever_position:int, accelerator_pedal_position:real, brake_pedal_position:real, torque_at_transmission:real, engine_temp:real, transmission_temp:real, steering_wheel_angle:real, door_status:string, ignition_status:int, headlamp_status:int, high_beam_status:int, windshield_wiper_status:int, fuel_level:real, parking_brake_status:string) 
+.create-or-alter table VehicleTelemetryRaw ingestion json mapping 'VehicleTelemetryRaw_mapping'
+```
+[{"Properties":{"Path":"$['EventID']"},"column":"EventID","datatype":""},{"Properties":{"Path":"$['JourneyID']"},"column":"JourneyID","datatype":""},{"Properties":{"Path":"$['VehicleID']"},"column":"VehicleID","datatype":""},{"Properties":{"Path":"$['DriverID']"},"column":"DriverID","datatype":""},{"Properties":{"Path":"$['EventCategoryID']"},"column":"EventCategoryID","datatype":""},{"Properties":{"Path":"$['timestamp']"},"column":"timestamp","datatype":""},{"Properties":{"Path":"$['odometer']"},"column":"odometer","datatype":""},{"Properties":{"Path":"$['tire_pressure']"},"column":"tire_pressure","datatype":""},{"Properties":{"Path":"$['lat']"},"column":"lat","datatype":""},{"Properties":{"Path":"$['lon']"},"column":"lon","datatype":""},{"Properties":{"Path":"$['vehicle_speed']"},"column":"vehicle_speed","datatype":""},{"Properties":{"Path":"$['engine_rpm']"},"column":"engine_rpm","datatype":""},{"Properties":{"Path":"$['transmission_gear_position']"},"column":"transmission_gear_position","datatype":""},{"Properties":{"Path":"$['gear_lever_position']"},"column":"gear_lever_position","datatype":""},{"Properties":{"Path":"$['accelerator_pedal_position']"},"column":"accelerator_pedal_position","datatype":""},{"Properties":{"Path":"$['brake_pedal_position']"},"column":"brake_pedal_position","datatype":""},{"Properties":{"Path":"$['torque_at_transmission']"},"column":"torque_at_transmission","datatype":""},{"Properties":{"Path":"$['engine_temp']"},"column":"engine_temp","datatype":""},{"Properties":{"Path":"$['transmission_temp']"},"column":"transmission_temp","datatype":""},{"Properties":{"Path":"$['steering_wheel_angle']"},"column":"steering_wheel_angle","datatype":""},{"Properties":{"Path":"$['door_status']"},"column":"door_status","datatype":""},{"Properties":{"Path":"$['ignition_status']"},"column":"ignition_status","datatype":""},{"Properties":{"Path":"$['headlamp_status']"},"column":"headlamp_status","datatype":""},{"Properties":{"Path":"$['high_beam_status']"},"column":"high_beam_status","datatype":""},{"Properties":{"Path":"$['windshield_wiper_status']"},"column":"windshield_wiper_status","datatype":""},{"Properties":{"Path":"$['fuel_level']"},"column":"fuel_level","datatype":""},{"Properties":{"Path":"$['parking_brake_status']"},"column":"parking_brake_status","datatype":""}]
+```
+.create-merge table Tags (tag:string, tag_description:string, category:string, threshold_low:real, threshold_high:real, threshold_type:string, agrregation_rule:string, uom:string, legacy_tag_id:string, metric:string, component:string, asset:string) 
+.create-merge table Assets (AssetID:string, AssetCode:string, Category:string, AssetType:string, Manufacturer:string, Model:string, InstallDate:string, Location:string, OperatingConditions:string, FailureModes:string, MaintenanceStrategy:string, LastMaintenance:string, MTBF_hours:string, Availability_pct:real, Latitude:real, Longitude:real) 
+.create-or-alter function with (skipvalidation = "true") ParseScadaTelemetry() {
+    ScadaTelemetryRaw
+    | mv-expand(metrics)
+    | where metrics.dataType == "Double"
+    | project
+        tag = tostring(metrics.name),
+        timestamp = todatetime(metrics.timestamp),
+        value = todouble(metrics.value)
+}
+.create-or-alter function with (folder = "Packages\\ML", docstring = "Predict MVAD model in Microsoft Fabric", skipvalidation = "true") predict_fabric_mvad_fl(samples:(*), features_cols:dynamic, artifacts_uri:string, trim_result:bool=false, asset:string) {
+    let s = artifacts_uri;
+     let artifacts = bag_pack(
+                    'MLmodel',
+                    strcat(s, '/MLmodel;impersonate'),
+                    'conda.yaml',
+                    strcat(s, '/conda.yaml;impersonate'),
+                    'requirements.txt',
+                    strcat(s, '/requirements.txt;impersonate'),
+                    'python_env.yaml',
+                    strcat(s, '/python_env.yaml;impersonate'),
+                    'python_model.pkl',
+                    strcat(s, '/python_model.pkl;impersonate')
+                );
+     let kwargs = bag_pack('features_cols', features_cols, 'trim_result', trim_result, 'asset', asset);
+     let code = ```
+import os
+import shutil
+import mlflow
+asset = kargs["asset"]
+model_dir = 'C:/Temp/mvad_model_' + asset
+model_data_dir = model_dir + '/data'
+os.mkdir(model_dir)
+shutil.move('C:/Temp/MLmodel', model_dir)
+shutil.move('C:/Temp/conda.yaml', model_dir)
+shutil.move('C:/Temp/requirements.txt', model_dir)
+shutil.move('C:/Temp/python_env.yaml', model_dir)
+shutil.move('C:/Temp/python_model.pkl', model_dir)
+features_cols = kargs["features_cols"]
+trim_result = kargs["trim_result"]
+test_data = df[features_cols]
+model = mlflow.pyfunc.load_model(model_dir)
+predictions = model.predict(test_data)
+predict_result = pd.DataFrame(predictions)
+samples_offset = len(df) - len(predict_result)        # this model doesn't output predictions for the first sliding_window-1 samples
+if trim_result:                                       # trim the prefix samples
+    result = df[samples_offset:]
+    result.iloc[:,-4:] = predict_result.iloc[:, 1:]   # no need to copy 1st column which is the timestamp index
+else:
+    result = df                                       # output all samples
+    result.iloc[samples_offset:,-4:] = predict_result.iloc[:, 1:]
+        ```;
+     samples
+    | evaluate python(typeof(*), code, kwargs, external_artifacts=artifacts)
+}
+.create-or-alter function with (docstring = "Calculate a suitable timespan for breaking up a time period", skipvalidation = "true") get_bin_timespan(relative_time:string, start:string, end:string, bin_timespan:string, max_bins:int=2000, anchor_date:datetime=datetime(null)) {
+    let _start = iff(relative_time == '*custom*', todatetime(start), iff(isempty(anchor_date), now(), anchor_date) - totimespan(relative_time));
+     let _end = iff(relative_time == '*custom*', todatetime(end), iff(isempty(anchor_date), now(), anchor_date));
+     let _bin_timespan = bin_timespan;
+     let _max_bins = max_bins;
+     let _bins = (_end - _start) / totimespan(_bin_timespan);
+     let _duration = abs(datetime_diff('second', _end, _start));
+     let _standard_timespans = datatable (seconds_per_bin: int, bin_timespan_label: string) [
+    1, '1sec',
+    2, '2sec',
+    5, '5sec',
+    10, '10sec',
+    15, '15sec',
+    30, '30sec',
+    60, '1min',
+    120, '2min',
+    300, '5min',
+    600, '10min',
+    900, '15min',
+    1800, '30min',
+    3600, '1hour',
+    7200, '2hour',
+    10800, '3hour',
+    21600, '6hour',
+    43200, '12hour',
+    86400, '1day',
+    604800, '7days'
+];
+     let _standard_timespan = toscalar(
+        _standard_timespans
+        | extend duration = _duration, bins = _duration / seconds_per_bin 
+        | where bins <= _max_bins
+        | project bin_timespan = bin_timespan_label
+        | top 1 by _duration desc
+        );
+     let result = datatable (id: int) [1];
+     result
+    | project bin_timespan = case(_bins <= _max_bins, _bin_timespan, isnotempty(_standard_timespan), _standard_timespan, strcat(tostring(toint(_duration / (_max_bins - 1))), 'sec'))
+}
+.create-or-alter function with (skipvalidation = "true") ParseAssetAnomaliesMVAD() {
+    AssetAnomaliesMVADRaw
+| mv-expand anomalies
+| project
+    is_anomaly = tobool(anomalies.is_anomaly),
+    asset = tostring(anomalies.asset),
+    timestamp = todatetime(anomalies.timestamp),
+    score = todouble(anomalies.score),
+    todouble(severity = anomalies.severity),
+    interpretation = todynamic(tostring(anomalies.interpretation))
+}
+.create-or-alter function with (skipvalidation = "true") ParseAssetAnomaliesMVADInterpretation() {
+AssetAnomaliesMVAD
+| where is_anomaly
+| mv-expand interpretation
+| extend tag = tostring(interpretation.variable_name), contribution_score = todouble(interpretation.contribution_score), correlation_changes = interpretation.correlation_changes
+| project-away interpretation
+}
+.create-or-alter function with (docstring = "Aggregate telemetry for a desired asset and pivot it into a wide table with a column for each metric.", skipvalidation = "true") AssetTelemetry(_asset:string, previous_watermark:datetime=datetime(null)) {
+    Tags
+    | where asset == _asset
+    | project tag
+    | join kind=inner ScadaTelemetry on tag
+    | where timestamp >= previous_watermark or isempty(previous_watermark)
+    | summarize value = avg(value) by tag, bin(timestamp, 1s)
+    | evaluate pivot(tag, avg(value), timestamp)
+}
+.create-or-alter function with (docstring = "Find anomalies in the telemetry for asset 8K2 using multi-variate anomaly detection model", skipvalidation = "true") mvad_get_new_anomalies(_asset:string, start_timestamp:datetime=datetime(null)) {
+    //Determine the previous watermark
+     let previous_watermark = iif(isnotempty(start_timestamp), start_timestamp, toscalar(AssetAnomaliesMVAD | where asset == _asset | summarize max(timestamp)));
+     //Retrieve pivoted telemetry observations from the point that precedes the previous watermark by a certain buffer (e.g., 10 minutes)
+     //This time period should be sufficient to include the number of observations specified by the sliding_window, for which anomalies will not be detected
+     let observations = materialize(AssetTelemetry(_asset, datetime_add('minute', -5, previous_watermark)));
+     // separate net new observations (after the previous watermark)
+     let new_observations = observations
+        | where timestamp >= previous_watermark or isempty(previous_watermark);
+     let num_predictions=toscalar(new_observations | count);   //  number of latest points to predict    
+     //Retrieve sliding window setting from a config table
+     let sliding_window = toscalar(
+        AssetMVADModels 
+        | where asset == _asset
+        | top 1 by effective_date desc 
+        | project sliding_window);                       //  should match the window that was set for model training
+     let prefix_score_len = sliding_window - 1;
+     let num_samples = prefix_score_len + num_predictions;
+     //Construct a dummy record that will be inserted into the anomalies table to mark the high watermark
+     let high_watermark = new_observations
+        | summarize timestamp = max(timestamp)
+        | project
+            asset = _asset,
+            timestamp,
+            is_anomaly=bool(false),
+            score=0.0,
+            severity=0.0,
+            interpretation=dynamic(null);
+     //Retrieve the list of features for this model in the correct order and convert to array
+     let features_cols = toscalar(
+        AssetMVADFeatures
+        | where asset == _asset
+        | order by ordinal asc 
+        | summarize make_list(tag));
+     //Retrieve the URI of the ML model stored in a Fabric Workspace (most assets, will require separate models)
+     let model_uri = toscalar(
+        AssetMVADModels 
+        | where asset == _asset
+        | top 1 by effective_date desc 
+        | project model_uri);
+     observations
+    | top num_samples by timestamp desc
+    | order by timestamp asc
+    | extend
+        is_anomaly=bool(false),
+        score=real(null),
+        severity=real(null),
+        interpretation=dynamic(null)
+    | invoke predict_fabric_mvad_fl(
+             features_cols
+        ,
+             artifacts_uri=model_uri,
+             trim_result=true,
+             asset=_asset
+         )
+    | where is_anomaly
+    | project is_anomaly, asset = _asset, timestamp, score, severity, interpretation
+    | union high_watermark
+}
+.create-or-alter function with (skipvalidation = "true") ParseAssetAnomaliesMVADInterpretationDetails() { 
+     AssetAnomaliesMVADInterpretation
+    | mv-expand
+        secondary_tag = correlation_changes.changed_variables to typeof(string),
+        correlation_change = correlation_changes.changed_values to typeof(double)
+    | project-away correlation_changes, is_anomaly
+ }
+.alter table ScadaTelemetry policy update "[{\"IsEnabled\":true,\"Source\":\"ScadaTelemetryRaw\",\"Query\":\"ParseScadaTelemetry\",\"IsTransactional\":true,\"PropagateIngestionProperties\":false,\"ManagedIdentity\":null}]"
+.alter table AssetAnomaliesMVAD policy update "[{\"IsEnabled\":true,\"Source\":\"AssetAnomaliesMVADRaw\",\"Query\":\"ParseAssetAnomaliesMVAD\",\"IsTransactional\":true,\"PropagateIngestionProperties\":false,\"ManagedIdentity\":null}]"
+.alter table AssetAnomaliesMVADInterpretation policy update "[{\"IsEnabled\":true,\"Source\":\"AssetAnomaliesMVAD\",\"Query\":\"ParseAssetAnomaliesMVADInterpretation\",\"IsTransactional\":false,\"PropagateIngestionProperties\":false,\"ManagedIdentity\":null}]"

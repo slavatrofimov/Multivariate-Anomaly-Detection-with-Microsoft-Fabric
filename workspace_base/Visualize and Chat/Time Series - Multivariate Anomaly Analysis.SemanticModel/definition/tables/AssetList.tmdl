@@ -1,0 +1,33 @@
+table AssetList
+	lineageTag: d523bb6a-bc78-4164-9e12-ffa133ae6aab
+
+	column asset
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 68a2b5fe-1d51-447a-aa6b-570e51f3f0b4
+		summarizeBy: none
+		sourceColumn: asset
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 2,
+				  "kind": 1,
+				  "selectAllValue": "__SelectAll__"
+				}
+
+		annotation SummarizationSetBy = Automatic
+
+	partition AssetList = m
+		mode: directQuery
+		source =
+				let
+				    Query = "
+				    Assets | project asset = AssetID",
+				    Source = AzureDataExplorer.Contents("https://trd-xarh0n5kkf5xbfcwyc.z4.kusto.fabric.microsoft.com", "MultivariateAnomalyDetectionEH", Query, [MaxRows=null, MaxSize=null, NoTruncate=null, AdditionalSetStatements=null])
+				in
+				    Source
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

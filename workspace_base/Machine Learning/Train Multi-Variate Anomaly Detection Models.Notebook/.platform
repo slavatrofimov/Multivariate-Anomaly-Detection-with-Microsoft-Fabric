@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Notebook",
+    "displayName": "Train Multi-Variate Anomaly Detection Models"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "722a49fd-fb13-9de0-4e19-0fde3f65d8fb"
+  }
+}

@@ -1,0 +1,175 @@
+table DynamicQuery
+	lineageTag: ca8dd070-6b8e-438b-a4f4-b3dc1c88e14a
+
+	measure 'Chart Title' =
+			
+			VAR tagCount = COUNTROWS(Tags)
+			RETURN "Observations " & IF(SELECTEDVALUE(ChartConfig[SplitBy]) = "tag", "and anomalies ", "") & "for " & IF(tagCount>1, tagCount & " tags", SELECTEDVALUE(Tags[tag]))
+		lineageTag: 6264ec8f-b8e3-4686-872d-a64239e70d9f
+
+	measure Color = MIN(DynamicQuery[marker_color])
+		lineageTag: 67d8d61a-b9e7-4d04-a820-3668e0bd5aec
+
+	column timestamp
+		dataType: dateTime
+		formatString: General Date
+		sourceProviderType: datetimeoffset
+		lineageTag: 70b4ed65-b48e-4ef7-acf7-e7ff4537766f
+		summarizeBy: none
+		sourceColumn: timestamp
+
+		annotation SummarizationSetBy = Automatic
+
+	column tag
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: d4b992ef-6d59-481d-9368-06c21e8de060
+		summarizeBy: none
+		sourceColumn: tag
+
+		annotation SummarizationSetBy = Automatic
+
+	column metric
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: bc185836-81e9-414e-ac21-57b4e6782e64
+		summarizeBy: none
+		sourceColumn: metric
+
+		annotation SummarizationSetBy = Automatic
+
+	column value
+		dataType: double
+		sourceProviderType: double
+		lineageTag: a9ce8e24-2870-4cc7-b585-498987bdb80f
+		summarizeBy: sum
+		sourceColumn: value
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column anomaly
+		dataType: double
+		sourceProviderType: double
+		lineageTag: 91c8ad39-9929-48c0-89ce-67635d09f67c
+		summarizeBy: sum
+		sourceColumn: anomaly
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column anomaly_indicator
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 36c52460-9955-4a3d-9d26-62f328874c91
+		summarizeBy: none
+		sourceColumn: anomaly_indicator
+
+		annotation SummarizationSetBy = Automatic
+
+	column component
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 2103d232-048a-4ece-a8e0-bda1181ecc33
+		summarizeBy: none
+		sourceColumn: component
+
+		annotation SummarizationSetBy = Automatic
+
+	column mvad_anomaly
+		dataType: double
+		sourceProviderType: double
+		lineageTag: 5660d139-ed2e-4643-8c69-1fab6f97ed0f
+		summarizeBy: sum
+		sourceColumn: mvad_anomaly
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column individual_anomaly
+		dataType: double
+		sourceProviderType: double
+		lineageTag: 3d902313-502e-4675-bc24-ef1c796c8dd1
+		summarizeBy: sum
+		sourceColumn: individual_anomaly
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column marker_color
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: bcfa722f-e285-4b3f-b0a0-6c18c57f64c4
+		summarizeBy: none
+		sourceColumn: marker_color
+
+		annotation SummarizationSetBy = Automatic
+
+	partition DynamicQuery = m
+		mode: directQuery
+		source = ```
+				let
+				    _tags = 
+				    if 
+				    //check to see if the parameter is a list
+				      Type.Is(
+				        Value.Type(_tag), 
+				        List.Type
+				      ) then 
+				        //if it is a list
+				        let
+				          //add single quotes around each value in the list
+				          AddSingleQuotes = List.Transform(
+				              _tag, 
+				              each "'" & _ & "'"
+				            ),
+				          //then turn it into a comma-delimited list
+				          DelimitedList = Text.Combine(
+				              AddSingleQuotes, 
+				              ","
+				            )
+				        in
+				          DelimitedList
+				    else 
+				      //if the parameter isn't a list
+				      //just add single quotes around the parameter value
+				      "'" & _tag & "'",
+				    anchor_date = if _anchor_date = #datetime(9999, 12, 31, 0, 0, 0) then "now()" else "todatetime('" &DateTime.ToText(_anchor_date) & "')",
+				    relative_time_period = Text.AfterDelimiter(_relative_time_period, " - "),
+				    Query = "
+				    let relative_time = '" & relative_time_period & "';
+				    let anchor_date = " & anchor_date & ";
+				    let start = todatetime('" & DateTime.ToText(_start_date) & "');
+				    let end = todatetime('" & DateTime.ToText(_end_date) & "');
+				    let _start = iff(relative_time == '*custom*', todatetime(start), anchor_date - totimespan(relative_time));
+				    let _end = iff(relative_time == '*custom*', todatetime(end), anchor_date);    
+				    let bin_timespan_label = toscalar(get_bin_timespan('" & relative_time_period & "', '" & DateTime.ToText(_start_date) & "', '" & DateTime.ToText(_end_date) & "', '" & _bin_timespan & "', " & Number.ToText(_max_bins) & "));
+				    let bin_timespan = totimespan(bin_timespan_label);
+				    let MVADAnomalies = materialize(AssetAnomaliesMVADInterpretation
+				    | where timestamp  between (_start .. _end) and asset == '" & Text.Start(Text.Replace(_tags, "'",""), 3) & "' and is_anomaly
+				    | where severity >= " & Number.ToText(_mvad_severity_threshold) & " and  contribution_score >= " & Number.ToText(_mvad_contribution_threshold) & "
+				    | summarize mvad_anomaly = max(severity) by bin(timestamp, bin_timespan), tag);
+				    ScadaTelemetry
+				    | where timestamp  between (_start .. _end) and tag in (" & _tags & ")
+				    | make-series value = " & _aggregation & "(value) default=double(null) on timestamp step bin_timespan by tag 
+				    | project tag, value = series_fill_linear(value), timestamp
+				    | extend anomaly = series_decompose_anomalies(value, 1.5, -1, 'linefit')
+				    | mv-expand timestamp, value, anomaly
+				    | project tag, todatetime(timestamp), todouble(value), todouble(anomaly)
+				    | lookup kind=leftouter (MVADAnomalies) on tag, timestamp
+				    | project tag, timestamp, value, anomaly = iif(anomaly != 0 or mvad_anomaly != 0, value, double(null)), individual_anomaly = iif(anomaly != 0, value, double(null)), mvad_anomaly = iif(mvad_anomaly != 0, mvad_anomaly, double(null)), anomaly_indicator = strcat(iif(anomaly != 0, ' ● Individual', ''), iif(mvad_anomaly > 0, ' ● Multivariate', ''))
+				    | lookup kind=leftouter (TagMetadata | project tag, metric, component) on tag
+				    | extend marker_color = iif(individual_anomaly>0, 'FireBrick', iif(mvad_anomaly >0, 'Orange', ''))",
+				    Source = AzureDataExplorer.Contents("https://trd-xarh0n5kkf5xbfcwyc.z4.kusto.fabric.microsoft.com", "MultivariateAnomalyDetectionEH", Query, [MaxRows=null, MaxSize=null, NoTruncate=null, AdditionalSetStatements=null])
+				in
+				    Source
+				```
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
