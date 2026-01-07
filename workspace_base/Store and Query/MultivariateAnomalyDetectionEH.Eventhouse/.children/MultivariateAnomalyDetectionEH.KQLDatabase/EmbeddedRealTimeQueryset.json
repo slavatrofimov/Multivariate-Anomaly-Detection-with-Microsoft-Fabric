@@ -56,7 +56,7 @@
       },
       {
         "id": "b28d680a-4c69-48d3-b5a1-bdd3d340e2ba",
-        "content": "ScadaTelemetryRaw\n| take  100\n",
+        "content": "ScadaTelemetry\n| where 8K2_AXL_DISP_01 = 0.045001147\n| where timestamp between (\"2026-01-07T18:22:33\" .. \"2026-01-07T18:22:33\") \n\n\n and tag  == \"8K2_SPD_01\"\n\n            \"name\": \"8K2_SPD_01\",\n            \"timestamp\": \"2026-01-07T18:22:33\",\n\n\nAssetTelemetry('8K2')\n| where 8K2_AXL_DISP_01 == 0.045001147\n\n\nScadaTelemetry\n| where tag == '8K2_SPD_01' and timestamp  == '2025-11-12 19:01:49.000'\n\n\nAssetTelemetry('8K2')\n| top 300 by timestamp asc\n\nScadaTelemetry\n| where tag == '8K2_SPD_01' \n\nand value == double(null)\n\n//.drop extents from ScadaTelemetry\n\n\nAssetAnomaliesMVAD\n| take 100",
         "title": "",
         "dataSourceId": "03ecee57-4d6a-4d09-8e01-f23e26c73cc6"
       }

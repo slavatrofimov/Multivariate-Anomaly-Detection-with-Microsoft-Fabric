@@ -57,7 +57,7 @@ launcher.download_and_deploy(
     branch = "accelerator",
     workspace_folder="workspace",
     allow_non_empty_workspace=True,
-    item_type_stages = [["KQLDatabase", "Lakehouse", "Eventhouse"],["Notebook", "KQLDashboard", "KQLQueryset", "DataPipeline", "Eventstream", "SemanticModel", "Report", "Reflex", "DataAgent"]],
+    item_type_stages = [["KQLDatabase", "Lakehouse", "Eventhouse", "Environment"],["Notebook", "KQLDashboard", "KQLQueryset", "DataPipeline", "Eventstream", "SemanticModel", "Report", "Reflex", "DataAgent"]],
     data_folders={"data": "data"},
     lakehouse_name="ReferenceDataLH",
     validate_after_deployment=True,
@@ -148,6 +148,26 @@ deploy_map()
 
 # CELL ********************
 
+# Create additional folders
+def create_folder(name):
+    try:
+        fabric.create_folder(name)
+        print(f'Successfully created folder: {name}')
+    except:
+        print(f'Folder {name} already exists.')
+
+create_folder('Install')
+create_folder('Machine Learning')
+
+# METADATA ********************
+
+# META {
+# META   "language": "python",
+# META   "language_group": "jupyter_python"
+# META }
+
+# CELL ********************
+
 # Move current notebook to the Install folder
 move_item_to_folder(
         item_name=notebookutils.runtime.context["currentNotebookName"],
@@ -167,7 +187,7 @@ print("✅ Current notebook moved successfully!")
 
 # CELL ********************
 
-# Import sample data
+# Run a notebook to: Import sample data
 result = launcher.run_notebook_synchronous(
     notebook_name="Import Sample Data",
     parameters={},
@@ -183,46 +203,12 @@ result = launcher.run_notebook_synchronous(
 
 # CELL ********************
 
-# Create accelerated shortcuts in the KQL Database
-from fabric_launcher.post_deployment_utils import (
-    get_kusto_query_uri,
-    create_accelerated_shortcut_in_kql_db
+# Run a notebook to: Train Multi-Variate Anomaly Detection Models
+result = launcher.run_notebook_synchronous(
+    notebook_name="Train Multi-Variate Anomaly Detection Models",
+    parameters={},
+    timeout_seconds=3600
 )
-
-# Configuration Parameters
-target_workspace_id = fabric.resolve_workspace_id()
-target_eventhouse_name = 'MultivariateAnomalyDetectionEH'
-target_kql_db_name = 'MultivariateAnomalyDetectionEH'
-source_workspace_id = target_workspace_id 
-source_lakehouse_name = 'ReferenceDataLH'
-
-# Create shortcuts for required tables
-tables = ['assets', 'tags', 'substations', 'transformers']
-
-for table in tables:
-    source_path = f"Tables/{table}" 
-    target_shortcut_name = table.capitalize()
-    
-    print(f"Creating accelerated shortcut for table: {table}")
-    
-    try:
-        create_accelerated_shortcut_in_kql_db(
-            notebookutils=notebookutils,
-            target_workspace_id=target_workspace_id,
-            target_eventhouse_name=target_eventhouse_name,
-            target_kql_db_name=target_kql_db_name,
-            target_shortcut_name=target_shortcut_name,
-            source_workspace_id=source_workspace_id,
-            source_lakehouse_name=source_lakehouse_name,
-            source_path=source_path,
-            client=client
-        )
-        print(f"✅ Successfully created accelerated shortcut for '{table}'")
-        
-    except Exception as e:
-        print(f"❌ Failed to create shortcut for '{table}': {str(e)}")
-        # Continue with next table instead of stopping
-        continue
 
 # METADATA ********************
 
@@ -233,16 +219,40 @@ for table in tables:
 
 # CELL ********************
 
-# Execute a KQL Query to load data into the MeterContextualization table
-from fabric_launcher.post_deployment_utils import (
-    get_kusto_query_uri,
-    exec_kql_command
-)
+# Move machine learning items to the desired folder
+move_item_to_folder(
+        item_name="MVAD_Compressor_8K2",
+        item_type="MLExperiment",
+        folder_name="Machine Learning",
+        workspace_id=workspace_id,
+        client=client
+    )
 
-kusto_query_uri = get_kusto_query_uri(target_workspace_id, target_eventhouse_name, client)
-kql_command = f""".set-or-replace MeterContextualization <| MeterContextualizationFunction()"""
-exec_kql_command(kusto_query_uri, target_kql_db_name, kql_command, notebookutils)
-print('✅ Loaded data into the MeterContextualiazation table')
+move_item_to_folder(
+        item_name="MVAD_Compressor_MBZ",
+        item_type="MLExperiment",
+        folder_name="Machine Learning",
+        workspace_id=workspace_id,
+        client=client
+    ) 
+
+move_item_to_folder(
+        item_name="mvad_compressor_model_8K2",
+        item_type="MLModel",
+        folder_name="Machine Learning",
+        workspace_id=workspace_id,
+        client=client
+    )
+
+move_item_to_folder(
+        item_name="mvad_compressor_model_MBZ",
+        item_type="MLModel",
+        folder_name="Machine Learning",
+        workspace_id=workspace_id,
+        client=client
+    ) 
+
+print("✅ Experiments and models moved to appropriate folders successfully")
 
 # METADATA ********************
 
