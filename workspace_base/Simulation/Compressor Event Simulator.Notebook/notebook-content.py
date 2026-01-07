@@ -91,6 +91,22 @@ def get_eventstream_connection_string(eventstream_name, eventstream_source_name)
 scada_event_hub_connection_string = get_eventstream_connection_string(eventstream_name = "ScadaEvents_EventStream", eventstream_source_name = "ScadaEvents-Source")
 anomalies_event_hub_connection_string  = get_eventstream_connection_string(eventstream_name = "Anomalies_EventStream", eventstream_source_name = "Anomalies-Source")
 
+
+# Get Kusto Query URI for a given eventhouse
+def get_kusto_query_uri(eventhouse_name):
+    workspace_id = fabric.resolve_workspace_id()
+    eventhouse_id = fabric.resolve_item_id(eventhouse_name)
+    client = fabric.FabricRestClient()
+    url = f"v1/workspaces/{workspace_id}/eventhouses/{eventhouse_id}"
+    response = client.get(url)
+    kusto_query_uri = response.json()['properties']['queryServiceUri']
+    return kusto_query_uri
+
+kusto_query_uri = get_kusto_query_uri('MultivariateAnomalyDetectionEH')
+
+# The database to write the data
+kql_database = "MultivariateAnomalyDetectionEH"
+
 # METADATA ********************
 
 # META {
@@ -222,7 +238,7 @@ def rows_to_anomalies_json(df):
 # CELL ********************
 
 # Function to detect anomalies and send to Eventstream
-def detect_and_store_anomalies_kql(asset):
+def detect_and_store_anomalies_kql(kusto_query_uri, kql_database, asset):
     # Get anomalies using multivariate anomaly detection
     kustoQuery = 'mvad_get_new_anomalies("' + asset + '")'
 
@@ -235,8 +251,8 @@ def detect_and_store_anomalies_kql(asset):
         kustoDf  = spark.read\
         .format("com.microsoft.kusto.spark.synapse.datasource")\
         .option("accessToken", accessToken)\
-        .option("kustoCluster", kustoUri)\
-        .option("kustoDatabase", database)\
+        .option("kustoCluster", kusto_query_uri)\
+        .option("kustoDatabase", kql_database)\
         .option("kustoQuery", kustoQuery).load()
     except Exception as e:
         print(e) 
@@ -290,21 +306,6 @@ def detect_and_store_anomalies_kql(asset):
 # CELL ********************
 
 #Read in data for the two compressors into dataframes and transform to Pandas
-
-# Get Kusto Query URI for a given eventhouse
-def get_kusto_query_uri(eventhouse_name):
-    workspace_id = fabric.resolve_workspace_id()
-    eventhouse_id = fabric.resolve_item_id(eventhouse_name)
-    client = fabric.FabricRestClient()
-    url = f"v1/workspaces/{workspace_id}/eventhouses/{eventhouse_id}"
-    response = client.get(url)
-    kusto_query_uri = response.json()['properties']['queryServiceUri']
-    return kusto_query_uri
-
-kusto_query_uri = get_kusto_query_uri('MultivariateAnomalyDetectionEH')
-
-# The database to write the data
-kql_database = "MultivariateAnomalyDetectionEH"
 
 # Helper function to retrieve data for the specific asset from a KQL database
 def retrieve_kql_asset_telemetry(kusto_query_uri, kql_database, asset_id):
@@ -388,13 +389,13 @@ while BatchCounter < TargetBatchCount:
     #Kick-of detection of multivariate anomalies after each set of 180 batches
     if BatchCounter >= 300 and BatchCounter % 240 == 120:
         # Submit asynchronously
-        future = submit_async(detect_and_store_anomalies_kql('8K2'))
+        future = submit_async(detect_and_store_anomalies_kql(kusto_query_uri, kql_database, '8K2'))
     if BatchCounter >= 300 and BatchCounter % 240 == 0:
         # Submit asynchronously
-        future = submit_async(detect_and_store_anomalies_kql('MBZ'))
+        future = submit_async(detect_and_store_anomalies_kql(kusto_query_uri, kql_database, 'MBZ'))
     # Printing some stats to track the stream
-    if BatchCounter %60==0:                
-        print ('--Batch #:' + str(BatchCounter) + '; rows: ' + str(x) + ' - ' + str(y)) 
+    if BatchCounter %100==0:                
+        print ('--Processed batch #:' + str(BatchCounter) + '; last row: ' + str(y)) 
     #Setting the control variable for the next pass
     RowCounter   = RowCounter + i
     RowRemaining = max(0,(z-RowCounter))
