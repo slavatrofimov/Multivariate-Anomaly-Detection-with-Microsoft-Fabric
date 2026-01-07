@@ -37,7 +37,7 @@ find_replace:
   # Replace Environment references in notebook metadata
   - find_value: \#\s*META\s*"environmentId":\s*"([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})"
     replace_value:
-      _ALL_: "$items.Environment.Runtime1.2.Environment.$id"
+      _ALL_: "$items.Environment.Runtime1.2.$id"
     is_regex: "true"
     item_type: "Notebook"
     file_path: "**/notebook-content.py"
