@@ -7,7 +7,6 @@
 .create-merge table ScadaTelemetryRaw (metrics:dynamic, EventProcessedUtcTime:datetime, PartitionId:long, EventEnqueuedUtcTime:datetime) 
 .create-merge table AssetAnomaliesMVADRaw (anomalies:dynamic, EventProcessedUtcTime:datetime, PartitionId:long, EventEnqueuedUtcTime:datetime) 
 .create-merge table AssetAnomaliesMVADInterpretation (is_anomaly:bool, asset:string, timestamp:datetime, score:real, severity:real, tag:string, contribution_score:real, correlation_changes:dynamic) 
-.create-merge table TagMetadata (asset:string, tag:string, metric:string, component:string) 
 .create-merge table AssetMVADFeatures (tag:string, ordinal:int, asset:string) 
 .create-merge table AssetMVADModels (asset:string, model_uri:string, sliding_window:long, effective_date:datetime) 
 .create-merge table VehicleTelemetryRaw (EventID:guid, JourneyID:string, VehicleID:string, DriverID:dynamic, EventCategoryID:string, timestamp:datetime, odometer:real, tire_pressure:dynamic, lat:real, lon:real, vehicle_speed:real, engine_rpm:real, transmission_gear_position:int, gear_lever_position:int, accelerator_pedal_position:real, brake_pedal_position:real, torque_at_transmission:real, engine_temp:real, transmission_temp:real, steering_wheel_angle:real, door_status:string, ignition_status:int, headlamp_status:int, high_beam_status:int, windshield_wiper_status:int, fuel_level:real, parking_brake_status:string) 
@@ -108,12 +107,6 @@ else:
      result
     | project bin_timespan = case(_bins <= _max_bins, _bin_timespan, isnotempty(_standard_timespan), _standard_timespan, strcat(tostring(toint(_duration / (_max_bins - 1))), 'sec'))
 }
-.create-or-alter function with (skipvalidation = "true") Tags() {
-    external_table('Tags')
-| extend metric = strcat(category, ' [', uom, ']'), component = strcat(category, '-', tag_id)
-| project-rename tag = tag_id
-| extend asset = substring(tag, 0, 3)
-}
 .create-or-alter function with (skipvalidation = "true") ParseAssetAnomaliesMVAD() {
     AssetAnomaliesMVADRaw
 | mv-expand anomalies
@@ -132,11 +125,8 @@ AssetAnomaliesMVAD
 | extend tag = tostring(interpretation.variable_name), contribution_score = todouble(interpretation.contribution_score), correlation_changes = interpretation.correlation_changes
 | project-away interpretation
 }
-.create-or-alter function with (skipvalidation = "true") Assets() {
-    external_table('Assets')
-}
 .create-or-alter function with (docstring = "Aggregate telemetry for a desired asset and pivot it into a wide table with a column for each metric.", skipvalidation = "true") AssetTelemetry(_asset:string, previous_watermark:datetime=datetime(null)) {
-    TagMetadata
+    Tags
     | where asset == _asset
     | project tag
     | join kind=inner ScadaTelemetry on tag

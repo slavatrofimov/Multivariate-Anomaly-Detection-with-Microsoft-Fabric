@@ -2,10 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
   "metadata": {
     "type": "Notebook",
-    "displayName": "Stage Sample Event Data"
+    "displayName": "Import Sample Data",
+    "description": ""
   },
   "config": {
     "version": "2.0",
-    "logicalId": "37b59dc2-f110-8163-486a-1f9be31a8e58"
+    "logicalId": "a12d6eb0-4074-91f5-4415-27d12f90f8b0"
   }
 }

@@ -1,51 +1,51 @@
-﻿"tag","tag_description","category","threshold_low","threshold_high","threshold_type","agrregation_rule","uom","legacy_tag_id","metric","component","asset"
-"MBZ_AXL_DISP_04","Compressor BCL 509/A shaft axial displacement","Axial displacement","-0.5","0.5","Up/Down","Avg","mm","75ZI801BB.pv","Axial displacement [mm]","Axial displacement-MBZ_AXL_DISP_04","MBZ"
-"MBZ_PRESS_01","Lube oil main pump delivery pressure","Pressure","9","","Down","Min","kg/cm2","75PI808.pv","Pressure [kg/cm2]","Pressure-MBZ_PRESS_01","MBZ"
-"MBZ_PRESS_02","Lube oil header pressure","Pressure","1.8","","Down","Min","kg/cm2","75PI823.pv","Pressure [kg/cm2]","Pressure-MBZ_PRESS_02","MBZ"
-"MBZ_VIBR_02","Steam turbine NG40/32 journal bearing rad. Vibration","Vibration","","89","Up","Max","Micron","75XI822BY.pv","Vibration [Micron]","Vibration-MBZ_VIBR_02","MBZ"
-"MBZ_VIBR_03","Compressor BCL509/journal bearing rad. Vibration","Vibration","","89","Up","Max","Micron","75XI823BX.pv","Vibration [Micron]","Vibration-MBZ_VIBR_03","MBZ"
-"MBZ_VIBR_04","Compressor BCL509/journal bearing rad. Vibration","Vibration","","89","Up","Max","Micron","75XI824BX.pv","Vibration [Micron]","Vibration-MBZ_VIBR_04","MBZ"
-"MBZ_SPD_01","Shutdown indicator when value <100","Speed","6,050","8,500","Up/Down","Avg","rpm","75SI865R.pv","Speed [rpm]","Speed-MBZ_SPD_01","MBZ"
-"MBZ_TEMP_04","Steam turbine NG 40/32 thrust bearing temperature","Temperature","","120","Up","Max","degrees_C","75TI828.pv","Temperature [degrees_C]","Temperature-MBZ_TEMP_04","MBZ"
-"MBZ_TEMP_05","Steam turbine NG 40/32 journal bearing temperature","Temperature","","120","Up","Max","degrees_C","75TI824.pv","Temperature [degrees_C]","Temperature-MBZ_TEMP_05","MBZ"
-"MBZ_TEMP_06","Compressor BCL 509/A thrust bearing temperature","Temperature","","120","Up","Max","degrees_C","75TI829.pv","Temperature [degrees_C]","Temperature-MBZ_TEMP_06","MBZ"
-"8K2_TEMP_04","Steam turbine NG 40/32 thrust bearing temperature","Temperature","","120","Up","Max","degrees_C","75TI828.pv","Temperature [degrees_C]","Temperature-8K2_TEMP_04","8K2"
-"8K2_TEMP_05","Steam turbine NG 40/32 journal bearing temperature","Temperature","","120","Up","Max","degrees_C","75TI824.pv","Temperature [degrees_C]","Temperature-8K2_TEMP_05","8K2"
-"8K2_TEMP_06","Compressor BCL 509/A thrust bearing temperature","Temperature","","120","Up","Max","degrees_C","75TI829.pv","Temperature [degrees_C]","Temperature-8K2_TEMP_06","8K2"
-"8K2_AXL_DISP_01","Steam turbine NG 40/32 shaft axial displacement","Axial displacement","-0.5","0.5","Up/Down","Avg","mm","75ZI800BA.pv","Axial displacement [mm]","Axial displacement-8K2_AXL_DISP_01","8K2"
-"8K2_AXL_DISP_02","Steam turbine NG 40/32 shaft axial displacement","Axial displacement","-0.5","0.5","Up/Down","Avg","mm","75ZI800BB.pv","Axial displacement [mm]","Axial displacement-8K2_AXL_DISP_02","8K2"
-"8K2_AXL_DISP_03","Compressor BCL 509/A shaft axial displacement","Axial displacement","-0.5","0.5","Up/Down","Avg","mm","75ZI801BA.pv","Axial displacement [mm]","Axial displacement-8K2_AXL_DISP_03","8K2"
-"8K2_VIBR_02","Steam turbine NG40/32 journal bearing rad. Vibration","Vibration","","89","Up","Max","Micron","75XI822BY.pv","Vibration [Micron]","Vibration-8K2_VIBR_02","8K2"
-"8K2_VIBR_03","Compressor BCL509/journal bearing rad. Vibration","Vibration","","89","Up","Max","Micron","75XI823BX.pv","Vibration [Micron]","Vibration-8K2_VIBR_03","8K2"
-"8K2_VIBR_04","Compressor BCL509/journal bearing rad. Vibration","Vibration","","89","Up","Max","Micron","75XI824BX.pv","Vibration [Micron]","Vibration-8K2_VIBR_04","8K2"
-"8K2_SPD_01","Shutdown indicator when value <100","Speed","6,050","8,500","Up/Down","Avg","rpm","75SI865R.pv","Speed [rpm]","Speed-8K2_SPD_01","8K2"
-"8K2_PRESS_03","Control oil header pressure","Pressure","4.2","","Down","Min","kg/cm2","75PI870.pv","Pressure [kg/cm2]","Pressure-8K2_PRESS_03","8K2"
-"8K2_PRESS_04","N2 inlet pressure","Pressure","0.84","","Down","Min","kg/cm2","75PI845.pv","Pressure [kg/cm2]","Pressure-8K2_PRESS_04","8K2"
-"8K2_PRESS_05","Primary vent differential pressure","Pressure","","3","Up","Min","kg/cm2","75PDI853.pv","Pressure [kg/cm2]","Pressure-8K2_PRESS_05","8K2"
-"MBZ_TEMP_01","Steam turbine NG 40/32 thrust bearing temperature","Temperature","","120","Up","Min","degrees_C","75TI821.pv","Temperature [degrees_C]","Temperature-MBZ_TEMP_01","MBZ"
-"MBZ_TEMP_02","Steam turbine NG 40/32 thrust bearing temperature","Temperature","","120","Up","Max","degrees_C","75TI822.pv","Temperature [degrees_C]","Temperature-MBZ_TEMP_02","MBZ"
-"MBZ_TEMP_03","Steam turbine NG 40/32 thrust bearing temperature","Temperature","","120","Up","Max","degrees_C","75TI827.pv","Temperature [degrees_C]","Temperature-MBZ_TEMP_03","MBZ"
-"8K2_TEMP_01","Steam turbine NG 40/32 thrust bearing temperature","Temperature","","120","Up","Min","degrees_C","75TI821.pv","Temperature [degrees_C]","Temperature-8K2_TEMP_01","8K2"
-"8K2_TEMP_02","Steam turbine NG 40/32 thrust bearing temperature","Temperature","","120","Up","Max","degrees_C","75TI822.pv","Temperature [degrees_C]","Temperature-8K2_TEMP_02","8K2"
-"8K2_TEMP_03","Steam turbine NG 40/32 thrust bearing temperature","Temperature","","120","Up","Max","degrees_C","75TI827.pv","Temperature [degrees_C]","Temperature-8K2_TEMP_03","8K2"
-"MBZ_TEMP_10","Compressor BCL 509/journal bearing temperature","Temperature","","120","Up","Max","degrees_C","75TI836.pv","Temperature [degrees_C]","Temperature-MBZ_TEMP_10","MBZ"
-"MBZ_TEMP_11","Compressor BCL 509/journal bearing temperature","Temperature","","120","Up","Max","degrees_C","75TI834.pv","Temperature [degrees_C]","Temperature-MBZ_TEMP_11","MBZ"
-"MBZ_VIBR_01","Steam turbine NG40/32 journal bearing rad. Vibration","Vibration","","89","Up","Max","Micron","75XI821BX.pv","Vibration [Micron]","Vibration-MBZ_VIBR_01","MBZ"
-"8K2_AXL_DISP_04","Compressor BCL 509/A shaft axial displacement","Axial displacement","-0.5","0.5","Up/Down","Avg","mm","75ZI801BB.pv","Axial displacement [mm]","Axial displacement-8K2_AXL_DISP_04","8K2"
-"8K2_PRESS_01","Lube oil main pump delivery pressure","Pressure","9","","Down","Min","kg/cm2","75PI808.pv","Pressure [kg/cm2]","Pressure-8K2_PRESS_01","8K2"
-"8K2_PRESS_02","Lube oil header pressure","Pressure","1.8","","Down","Min","kg/cm2","75PI823.pv","Pressure [kg/cm2]","Pressure-8K2_PRESS_02","8K2"
-"8K2_TEMP_07","Compressor BCL 509/A thrust bearing temperature","Temperature","","120","Up","Max","degrees_C","75TI830.pv","Temperature [degrees_C]","Temperature-8K2_TEMP_07","8K2"
-"8K2_TEMP_08","Compressor BCL 509/A thrust bearing temperature","Temperature","","120","Up","Max","degrees_C","75TI831.pv","Temperature [degrees_C]","Temperature-8K2_TEMP_08","8K2"
-"8K2_TEMP_09","Compressor BCL 509/A thrust bearing temperature","Temperature","","120","Up","Max","degrees_C","75TI832.pv","Temperature [degrees_C]","Temperature-8K2_TEMP_09","8K2"
-"8K2_TEMP_10","Compressor BCL 509/journal bearing temperature","Temperature","","120","Up","Max","degrees_C","75TI836.pv","Temperature [degrees_C]","Temperature-8K2_TEMP_10","8K2"
-"8K2_TEMP_11","Compressor BCL 509/journal bearing temperature","Temperature","","120","Up","Max","degrees_C","75TI834.pv","Temperature [degrees_C]","Temperature-8K2_TEMP_11","8K2"
-"8K2_VIBR_01","Steam turbine NG40/32 journal bearing rad. Vibration","Vibration","","89","Up","Max","Micron","75XI821BX.pv","Vibration [Micron]","Vibration-8K2_VIBR_01","8K2"
-"MBZ_AXL_DISP_01","Steam turbine NG 40/32 shaft axial displacement","Axial displacement","-0.5","0.5","Up/Down","Avg","mm","75ZI800BA.pv","Axial displacement [mm]","Axial displacement-MBZ_AXL_DISP_01","MBZ"
-"MBZ_AXL_DISP_02","Steam turbine NG 40/32 shaft axial displacement","Axial displacement","-0.5","0.5","Up/Down","Avg","mm","75ZI800BB.pv","Axial displacement [mm]","Axial displacement-MBZ_AXL_DISP_02","MBZ"
-"MBZ_AXL_DISP_03","Compressor BCL 509/A shaft axial displacement","Axial displacement","-0.5","0.5","Up/Down","Avg","mm","75ZI801BA.pv","Axial displacement [mm]","Axial displacement-MBZ_AXL_DISP_03","MBZ"
-"MBZ_TEMP_07","Compressor BCL 509/A thrust bearing temperature","Temperature","","120","Up","Max","degrees_C","75TI830.pv","Temperature [degrees_C]","Temperature-MBZ_TEMP_07","MBZ"
-"MBZ_TEMP_08","Compressor BCL 509/A thrust bearing temperature","Temperature","","120","Up","Max","degrees_C","75TI831.pv","Temperature [degrees_C]","Temperature-MBZ_TEMP_08","MBZ"
-"MBZ_TEMP_09","Compressor BCL 509/A thrust bearing temperature","Temperature","","120","Up","Max","degrees_C","75TI832.pv","Temperature [degrees_C]","Temperature-MBZ_TEMP_09","MBZ"
-"MBZ_PRESS_03","Control oil header pressure","Pressure","4.2","","Down","Min","kg/cm2","75PI870.pv","Pressure [kg/cm2]","Pressure-MBZ_PRESS_03","MBZ"
-"MBZ_PRESS_04","N2 inlet pressure","Pressure","0.84","","Down","Min","kg/cm2","75PI845.pv","Pressure [kg/cm2]","Pressure-MBZ_PRESS_04","MBZ"
-"MBZ_PRESS_05","Primary vent differential pressure","Pressure","","3","Up","Min","kg/cm2","75PDI853.pv","Pressure [kg/cm2]","Pressure-MBZ_PRESS_05","MBZ"
+﻿tag,tag_description,category,threshold_low,threshold_high,threshold_type,agrregation_rule,uom,legacy_tag_id,metric,component,asset
+MBZ_AXL_DISP_04,Compressor BCL 509/A shaft axial displacement,Axial displacement,-0.5,0.5,Up/Down,Avg,mm,75ZI801BB.pv,Axial displacement [mm],Axial displacement-MBZ_AXL_DISP_04,MBZ
+MBZ_PRESS_01,Lube oil main pump delivery pressure,Pressure,9,,Down,Min,kg/cm2,75PI808.pv,Pressure [kg/cm2],Pressure-MBZ_PRESS_01,MBZ
+MBZ_PRESS_02,Lube oil header pressure,Pressure,1.8,,Down,Min,kg/cm2,75PI823.pv,Pressure [kg/cm2],Pressure-MBZ_PRESS_02,MBZ
+MBZ_VIBR_02,Steam turbine NG40/32 journal bearing rad. Vibration,Vibration,,89,Up,Max,Micron,75XI822BY.pv,Vibration [Micron],Vibration-MBZ_VIBR_02,MBZ
+MBZ_VIBR_03,Compressor BCL509/journal bearing rad. Vibration,Vibration,,89,Up,Max,Micron,75XI823BX.pv,Vibration [Micron],Vibration-MBZ_VIBR_03,MBZ
+MBZ_VIBR_04,Compressor BCL509/journal bearing rad. Vibration,Vibration,,89,Up,Max,Micron,75XI824BX.pv,Vibration [Micron],Vibration-MBZ_VIBR_04,MBZ
+MBZ_SPD_01,Shutdown indicator when value <100,Speed,6050,8500,Up/Down,Avg,rpm,75SI865R.pv,Speed [rpm],Speed-MBZ_SPD_01,MBZ
+MBZ_TEMP_04,Steam turbine NG 40/32 thrust bearing temperature,Temperature,,120,Up,Max,degrees_C,75TI828.pv,Temperature [degrees_C],Temperature-MBZ_TEMP_04,MBZ
+MBZ_TEMP_05,Steam turbine NG 40/32 journal bearing temperature,Temperature,,120,Up,Max,degrees_C,75TI824.pv,Temperature [degrees_C],Temperature-MBZ_TEMP_05,MBZ
+MBZ_TEMP_06,Compressor BCL 509/A thrust bearing temperature,Temperature,,120,Up,Max,degrees_C,75TI829.pv,Temperature [degrees_C],Temperature-MBZ_TEMP_06,MBZ
+8K2_TEMP_04,Steam turbine NG 40/32 thrust bearing temperature,Temperature,,120,Up,Max,degrees_C,75TI828.pv,Temperature [degrees_C],Temperature-8K2_TEMP_04,8K2
+8K2_TEMP_05,Steam turbine NG 40/32 journal bearing temperature,Temperature,,120,Up,Max,degrees_C,75TI824.pv,Temperature [degrees_C],Temperature-8K2_TEMP_05,8K2
+8K2_TEMP_06,Compressor BCL 509/A thrust bearing temperature,Temperature,,120,Up,Max,degrees_C,75TI829.pv,Temperature [degrees_C],Temperature-8K2_TEMP_06,8K2
+8K2_AXL_DISP_01,Steam turbine NG 40/32 shaft axial displacement,Axial displacement,-0.5,0.5,Up/Down,Avg,mm,75ZI800BA.pv,Axial displacement [mm],Axial displacement-8K2_AXL_DISP_01,8K2
+8K2_AXL_DISP_02,Steam turbine NG 40/32 shaft axial displacement,Axial displacement,-0.5,0.5,Up/Down,Avg,mm,75ZI800BB.pv,Axial displacement [mm],Axial displacement-8K2_AXL_DISP_02,8K2
+8K2_AXL_DISP_03,Compressor BCL 509/A shaft axial displacement,Axial displacement,-0.5,0.5,Up/Down,Avg,mm,75ZI801BA.pv,Axial displacement [mm],Axial displacement-8K2_AXL_DISP_03,8K2
+8K2_VIBR_02,Steam turbine NG40/32 journal bearing rad. Vibration,Vibration,,89,Up,Max,Micron,75XI822BY.pv,Vibration [Micron],Vibration-8K2_VIBR_02,8K2
+8K2_VIBR_03,Compressor BCL509/journal bearing rad. Vibration,Vibration,,89,Up,Max,Micron,75XI823BX.pv,Vibration [Micron],Vibration-8K2_VIBR_03,8K2
+8K2_VIBR_04,Compressor BCL509/journal bearing rad. Vibration,Vibration,,89,Up,Max,Micron,75XI824BX.pv,Vibration [Micron],Vibration-8K2_VIBR_04,8K2
+8K2_SPD_01,Shutdown indicator when value <100,Speed,6050,8500,Up/Down,Avg,rpm,75SI865R.pv,Speed [rpm],Speed-8K2_SPD_01,8K2
+8K2_PRESS_03,Control oil header pressure,Pressure,4.2,,Down,Min,kg/cm2,75PI870.pv,Pressure [kg/cm2],Pressure-8K2_PRESS_03,8K2
+8K2_PRESS_04,N2 inlet pressure,Pressure,0.84,,Down,Min,kg/cm2,75PI845.pv,Pressure [kg/cm2],Pressure-8K2_PRESS_04,8K2
+8K2_PRESS_05,Primary vent differential pressure,Pressure,,3,Up,Min,kg/cm2,75PDI853.pv,Pressure [kg/cm2],Pressure-8K2_PRESS_05,8K2
+MBZ_TEMP_01,Steam turbine NG 40/32 thrust bearing temperature,Temperature,,120,Up,Min,degrees_C,75TI821.pv,Temperature [degrees_C],Temperature-MBZ_TEMP_01,MBZ
+MBZ_TEMP_02,Steam turbine NG 40/32 thrust bearing temperature,Temperature,,120,Up,Max,degrees_C,75TI822.pv,Temperature [degrees_C],Temperature-MBZ_TEMP_02,MBZ
+MBZ_TEMP_03,Steam turbine NG 40/32 thrust bearing temperature,Temperature,,120,Up,Max,degrees_C,75TI827.pv,Temperature [degrees_C],Temperature-MBZ_TEMP_03,MBZ
+8K2_TEMP_01,Steam turbine NG 40/32 thrust bearing temperature,Temperature,,120,Up,Min,degrees_C,75TI821.pv,Temperature [degrees_C],Temperature-8K2_TEMP_01,8K2
+8K2_TEMP_02,Steam turbine NG 40/32 thrust bearing temperature,Temperature,,120,Up,Max,degrees_C,75TI822.pv,Temperature [degrees_C],Temperature-8K2_TEMP_02,8K2
+8K2_TEMP_03,Steam turbine NG 40/32 thrust bearing temperature,Temperature,,120,Up,Max,degrees_C,75TI827.pv,Temperature [degrees_C],Temperature-8K2_TEMP_03,8K2
+MBZ_TEMP_10,Compressor BCL 509/journal bearing temperature,Temperature,,120,Up,Max,degrees_C,75TI836.pv,Temperature [degrees_C],Temperature-MBZ_TEMP_10,MBZ
+MBZ_TEMP_11,Compressor BCL 509/journal bearing temperature,Temperature,,120,Up,Max,degrees_C,75TI834.pv,Temperature [degrees_C],Temperature-MBZ_TEMP_11,MBZ
+MBZ_VIBR_01,Steam turbine NG40/32 journal bearing rad. Vibration,Vibration,,89,Up,Max,Micron,75XI821BX.pv,Vibration [Micron],Vibration-MBZ_VIBR_01,MBZ
+8K2_AXL_DISP_04,Compressor BCL 509/A shaft axial displacement,Axial displacement,-0.5,0.5,Up/Down,Avg,mm,75ZI801BB.pv,Axial displacement [mm],Axial displacement-8K2_AXL_DISP_04,8K2
+8K2_PRESS_01,Lube oil main pump delivery pressure,Pressure,9,,Down,Min,kg/cm2,75PI808.pv,Pressure [kg/cm2],Pressure-8K2_PRESS_01,8K2
+8K2_PRESS_02,Lube oil header pressure,Pressure,1.8,,Down,Min,kg/cm2,75PI823.pv,Pressure [kg/cm2],Pressure-8K2_PRESS_02,8K2
+8K2_TEMP_07,Compressor BCL 509/A thrust bearing temperature,Temperature,,120,Up,Max,degrees_C,75TI830.pv,Temperature [degrees_C],Temperature-8K2_TEMP_07,8K2
+8K2_TEMP_08,Compressor BCL 509/A thrust bearing temperature,Temperature,,120,Up,Max,degrees_C,75TI831.pv,Temperature [degrees_C],Temperature-8K2_TEMP_08,8K2
+8K2_TEMP_09,Compressor BCL 509/A thrust bearing temperature,Temperature,,120,Up,Max,degrees_C,75TI832.pv,Temperature [degrees_C],Temperature-8K2_TEMP_09,8K2
+8K2_TEMP_10,Compressor BCL 509/journal bearing temperature,Temperature,,120,Up,Max,degrees_C,75TI836.pv,Temperature [degrees_C],Temperature-8K2_TEMP_10,8K2
+8K2_TEMP_11,Compressor BCL 509/journal bearing temperature,Temperature,,120,Up,Max,degrees_C,75TI834.pv,Temperature [degrees_C],Temperature-8K2_TEMP_11,8K2
+8K2_VIBR_01,Steam turbine NG40/32 journal bearing rad. Vibration,Vibration,,89,Up,Max,Micron,75XI821BX.pv,Vibration [Micron],Vibration-8K2_VIBR_01,8K2
+MBZ_AXL_DISP_01,Steam turbine NG 40/32 shaft axial displacement,Axial displacement,-0.5,0.5,Up/Down,Avg,mm,75ZI800BA.pv,Axial displacement [mm],Axial displacement-MBZ_AXL_DISP_01,MBZ
+MBZ_AXL_DISP_02,Steam turbine NG 40/32 shaft axial displacement,Axial displacement,-0.5,0.5,Up/Down,Avg,mm,75ZI800BB.pv,Axial displacement [mm],Axial displacement-MBZ_AXL_DISP_02,MBZ
+MBZ_AXL_DISP_03,Compressor BCL 509/A shaft axial displacement,Axial displacement,-0.5,0.5,Up/Down,Avg,mm,75ZI801BA.pv,Axial displacement [mm],Axial displacement-MBZ_AXL_DISP_03,MBZ
+MBZ_TEMP_07,Compressor BCL 509/A thrust bearing temperature,Temperature,,120,Up,Max,degrees_C,75TI830.pv,Temperature [degrees_C],Temperature-MBZ_TEMP_07,MBZ
+MBZ_TEMP_08,Compressor BCL 509/A thrust bearing temperature,Temperature,,120,Up,Max,degrees_C,75TI831.pv,Temperature [degrees_C],Temperature-MBZ_TEMP_08,MBZ
+MBZ_TEMP_09,Compressor BCL 509/A thrust bearing temperature,Temperature,,120,Up,Max,degrees_C,75TI832.pv,Temperature [degrees_C],Temperature-MBZ_TEMP_09,MBZ
+MBZ_PRESS_03,Control oil header pressure,Pressure,4.2,,Down,Min,kg/cm2,75PI870.pv,Pressure [kg/cm2],Pressure-MBZ_PRESS_03,MBZ
+MBZ_PRESS_04,N2 inlet pressure,Pressure,0.84,,Down,Min,kg/cm2,75PI845.pv,Pressure [kg/cm2],Pressure-MBZ_PRESS_04,MBZ
+MBZ_PRESS_05,Primary vent differential pressure,Pressure,,3,Up,Min,kg/cm2,75PDI853.pv,Pressure [kg/cm2],Pressure-MBZ_PRESS_05,MBZ
