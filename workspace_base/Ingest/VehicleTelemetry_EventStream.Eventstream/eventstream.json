@@ -9,7 +9,7 @@
   ],
   "destinations": [
     {
-      "id": "257be200-f69a-477b-8ca8-eb73efe974da",
+      "id": "e5bc51cb-a190-4be2-acff-70efab681e2d",
       "name": "Eventhouse",
       "type": "Eventhouse",
       "properties": {
@@ -17,8 +17,8 @@
         "workspaceId": "00000000-0000-0000-0000-000000000000",
         "itemId": "68612164-9ec3-bedb-4cfb-0e4a6cc01750",
         "tableName": "VehicleTelemetryRaw",
-        "connectionName": "VehicleTelemetry_EventStream",
-        "mappingRuleName": "VehicleTelemetryRaw_mapping"
+        "connectionName": "VehicleTelemetry_EventStream_Multivariat",
+        "mappingRuleName": "VehicleTelemetryRaw_mapping_1"
       },
       "inputNodes": [
         {
