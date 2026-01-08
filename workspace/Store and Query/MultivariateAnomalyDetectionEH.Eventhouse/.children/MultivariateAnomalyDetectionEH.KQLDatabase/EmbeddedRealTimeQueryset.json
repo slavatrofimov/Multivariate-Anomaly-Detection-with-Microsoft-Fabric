@@ -6,7 +6,7 @@
         "id": "6086fdb3-e825-48e5-927e-59f0b7a6e0bf",
         "clusterUri": "https://trd-xarh0n5kkf5xbfcwyc.z4.kusto.fabric.microsoft.com",
         "type": "Fabric",
-        "databaseItemId": "3d6c2c84-408b-4b93-98a5-fbd47e5f836f",
+        "databaseItemId": "7e5f836f-fbd4-98a5-4b93-408b3d6c2c84",
         "databaseItemName": "MultivariateAnomalyDetectionEH"
       }
     ],
@@ -27,12 +27,6 @@
         "id": "253cd72f-0efe-4a30-90ba-dbaa7cbedfad",
         "content": "let AssetAnomalies = \nAssetAnomaliesMVAD\n| where timestamp >= ago(2hours) and is_anomaly\n| summarize anomaly_count = count(), max_severity = max(severity) by asset;\nAssets\n| project AssetID, AssetType, Manufacturer, Model, Latitude, Longitude = Longitude\n| join kind=inner  AssetAnomalies on $left.AssetID == $right.asset\n| project-away asset\n",
         "title": "Map_AssetsWithAnomalies",
-        "dataSourceId": "6086fdb3-e825-48e5-927e-59f0b7a6e0bf"
-      },
-      {
-        "id": "9fd3ead5-9d07-4621-b969-bb133e3dddf2",
-        "content": "TagMetadata | project Tag = tag, TagName = tag, Level1  = asset, Level2 = metric, Level3 = component, Level4 = component",
-        "title": "",
         "dataSourceId": "6086fdb3-e825-48e5-927e-59f0b7a6e0bf"
       }
     ]
