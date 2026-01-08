@@ -243,7 +243,7 @@
       "kind": "kusto-trident",
       "scopeId": "kusto-trident",
       "clusterUri": "",
-      "database": "68612164-9ec3-bedb-4cfb-0e4a6cc01750",
+      "database": "7e5f836f-fbd4-98a5-4b93-408b3d6c2c84",
       "name": "MultivariateAnomalyDetectionEH",
       "id": "05aa618a-2f27-44bd-b7a4-11bed8435454",
       "workspace": "00000000-0000-0000-0000-000000000000",
