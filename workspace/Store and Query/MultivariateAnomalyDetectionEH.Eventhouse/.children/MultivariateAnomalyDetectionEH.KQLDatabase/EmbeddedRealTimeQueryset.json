@@ -13,7 +13,7 @@
     "tabs": [
       {
         "id": "577a82b4-8e91-432b-81b8-2f00a63d0033",
-        "content": "let AssetAnomalies = \nAssetAnomaliesMVAD\n| where timestamp >= ago(2hours) and is_anomaly\n| summarize anomaly_count = count(), max_severity = max(severity) by asset;\nAssets\n| project AssetID, AssetType, Manufacturer, Model, Latitude, Longitude = -Longitude, anomaly_count = 0, max_severity = 0\n| join kind=leftanti AssetAnomalies on $left.AssetID == $right.asset\n\n\n",
+        "content": "let AssetAnomalies = \nAssetAnomaliesMVAD\n| where timestamp >= ago(2hours) and is_anomaly\n| summarize anomaly_count = count(), max_severity = max(severity) by asset;\nAssets\n| project AssetID, AssetType, Manufacturer, Model, Latitude, Longitude = Longitude, anomaly_count = 0, max_severity = 0\n| join kind=leftanti AssetAnomalies on $left.AssetID == $right.asset\n\n\n",
         "title": "Map_Assets",
         "dataSourceId": "6086fdb3-e825-48e5-927e-59f0b7a6e0bf"
       },
@@ -25,7 +25,7 @@
       },
       {
         "id": "253cd72f-0efe-4a30-90ba-dbaa7cbedfad",
-        "content": "let AssetAnomalies = \nAssetAnomaliesMVAD\n| where timestamp >= ago(2hours) and is_anomaly\n| summarize anomaly_count = count(), max_severity = max(severity) by asset;\nAssets\n| project AssetID, AssetType, Manufacturer, Model, Latitude, Longitude = -Longitude\n| join kind=inner  AssetAnomalies on $left.AssetID == $right.asset\n| project-away asset\n",
+        "content": "let AssetAnomalies = \nAssetAnomaliesMVAD\n| where timestamp >= ago(2hours) and is_anomaly\n| summarize anomaly_count = count(), max_severity = max(severity) by asset;\nAssets\n| project AssetID, AssetType, Manufacturer, Model, Latitude, Longitude = Longitude\n| join kind=inner  AssetAnomalies on $left.AssetID == $right.asset\n| project-away asset\n",
         "title": "Map_AssetsWithAnomalies",
         "dataSourceId": "6086fdb3-e825-48e5-927e-59f0b7a6e0bf"
       },

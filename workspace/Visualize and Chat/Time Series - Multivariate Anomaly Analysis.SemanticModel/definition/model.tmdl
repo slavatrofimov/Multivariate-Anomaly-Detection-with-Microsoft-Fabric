@@ -18,6 +18,8 @@ annotation __PBI_TimeIntelligenceEnabled = 0
 
 annotation PBI_QueryOrder = ["DynamicQuery","_start_date","_end_date","_max_bins","_bin_timespan","_aggregation","DateOptions","MaxBinsOptions","TimeSpanOptions","AggregationOptions","BinTimespan","Tags","_tag","_relative_time_period","TimePeriod","RelativeTime","Assets","_anchor_date","_mvad_severity_threshold","_mvad_contribution_threshold","ChartConfig","DynamicQueryCorrelation","DynamicQueryStats","DynamicMVAnomalies","MVADConfigOptions","DynamicMVAnomalySummary","_asset","DynamicMVAnomalyContributions","AssetList","DynamicMVAnomaliesByAsset","MVADTagContributionOptions"]
 
+annotation PBI_ProTooling = ["TMDL-Extension"]
+
 ref table DynamicQuery
 ref table DateOptions
 ref table MaxBinsOptions
