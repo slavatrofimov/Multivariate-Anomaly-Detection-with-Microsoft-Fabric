@@ -15,7 +15,7 @@
       "properties": {
         "dataIngestionMode": "DirectIngestion",
         "workspaceId": "00000000-0000-0000-0000-000000000000",
-        "itemId": "68612164-9ec3-bedb-4cfb-0e4a6cc01750",
+        "itemId": "7e5f836f-fbd4-98a5-4b93-408b3d6c2c84",
         "tableName": "VehicleTelemetryRaw",
         "connectionName": "VehicleTelemetry_EventStream_Multivariat",
         "mappingRuleName": "VehicleTelemetryRaw_mapping_1"
