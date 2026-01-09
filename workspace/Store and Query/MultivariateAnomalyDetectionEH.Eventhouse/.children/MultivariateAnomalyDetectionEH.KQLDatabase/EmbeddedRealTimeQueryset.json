@@ -6,7 +6,7 @@
         "id": "6086fdb3-e825-48e5-927e-59f0b7a6e0bf",
         "clusterUri": "https://trd-xarh0n5kkf5xbfcwyc.z4.kusto.fabric.microsoft.com",
         "type": "Fabric",
-        "databaseItemId": "7e5f836f-fbd4-98a5-4b93-408b3d6c2c84",
+        "databaseItemId": "4ca3a859-3057-44f5-8ecd-e261e09969b4",
         "databaseItemName": "MultivariateAnomalyDetectionEH"
       }
     ],
