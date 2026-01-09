@@ -19,7 +19,7 @@
       },
       {
         "id": "c7b3bdde-e42f-47ac-90ee-31d7a6e4fb64",
-        "content": "VehicleTelemetryRaw\n| summarize arg_max(timestamp, lat, lon) by VehicleID\n",
+        "content": "VehicleTelemetryRaw\n| summarize arg_max(timestamp, lat, lon) by vehicle_id\n",
         "title": "Map_Vehicles",
         "dataSourceId": "6086fdb3-e825-48e5-927e-59f0b7a6e0bf"
       },

@@ -68,7 +68,7 @@
       "name": "Vehicles",
       "sourceId": "7252dd9b-70a6-49ea-a326-0acf49fc5db7",
       "sourceLayerId": null,
-      "options": "{\"color\":\"#0D2E25\",\"type\":\"vector\",\"visible\":true,\"bubbleOptions\":{\"color\":\"#0D2E25\"},\"lineOptions\":{\"strokeColor\":\"#0D2E25\"},\"polygonOptions\":{\"fillColor\":\"#0D2E25\"},\"polygonExtrusionOptions\":{\"fillColor\":\"#0D2E25\"},\"tooltipKeys\":[\"VehicleID\"],\"dataLabelOptions\":{\"enabled\":true},\"dataLabelKeys\":[\"VehicleID\"]}"
+      "options": "{\"color\":\"#0D2E25\",\"type\":\"vector\",\"visible\":true,\"bubbleOptions\":{\"color\":\"#0D2E25\"},\"lineOptions\":{\"strokeColor\":\"#0D2E25\"},\"polygonOptions\":{\"fillColor\":\"#0D2E25\"},\"polygonExtrusionOptions\":{\"fillColor\":\"#0D2E25\"},\"tooltipKeys\":[\"vehicle_id\"],\"dataLabelOptions\":{\"enabled\":true},\"dataLabelKeys\":[\"vehicle_id\"]}"
     },
     {
       "id": "d826a218-8c50-442b-a041-7cd8f9ce9cae",

@@ -49,11 +49,10 @@ import requests
 import json
 import random
 import time
-import datetime
 import uuid
 import math
 import os
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import sempy.fabric as fabric
 import azure.eventhub
 from azure.eventhub import EventHubProducerClient, EventData
@@ -139,10 +138,10 @@ except Exception as e:
 def generate_vehicle_ids():
     """Generate IDs for a vehicle telemetry event"""
     return {
-        'EventID': str(uuid.uuid4()),
-        'JourneyID': f"journey_{fake.uuid4()[:8]}",
-        'DriverID': f"driver_{fake.uuid4()[:8]}",
-        'EventCategoryID': random.randint(1, 5)
+        'event_id': str(uuid.uuid4()),
+        'journey_id': f"journey_{fake.uuid4()[:8]}",
+        'driver_id': f"driver_{fake.uuid4()[:8]}",
+        'event_category_id': random.randint(1, 5)
     }
 
 def calculate_rpm_from_speed_and_gear(speed, gear):
@@ -403,7 +402,7 @@ def generate_vehicle_status(previous_data=None):
         'high_beam_status': high_beam_status,
         'windshield_wiper_status': windshield_wiper_status,
         'fuel_level': fuel_level,
-        'parking_brake_status': ""  # Empty as per requirements
+        'parking_brake_status': "off"  # Empty as per requirements
     }
 
 def generate_telemetry_event(vehicle_id=None, journey_id=None, driver_id=None, previous_data=None, lat=None, lon=None, time_delta=1.0):
@@ -422,8 +421,8 @@ def generate_telemetry_event(vehicle_id=None, journey_id=None, driver_id=None, p
     # Generate IDs if not provided
     if not journey_id or not driver_id:
         ids = generate_vehicle_ids()
-        journey_id = journey_id or ids['JourneyID']
-        driver_id = driver_id or ids['DriverID']
+        journey_id = journey_id or ids['journey_id']
+        driver_id = driver_id or ids['driver_id']
     
     event_id = str(uuid.uuid4())
     event_category_id = random.randint(1, 5)
@@ -446,15 +445,15 @@ def generate_telemetry_event(vehicle_id=None, journey_id=None, driver_id=None, p
         odometer = round(random.uniform(0, 250000.00), 2)
     
     # Timestamp
-    timestamp = datetime.utcnow().isoformat()
-    
+    timestamp = datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+
     # Combine all data
     telemetry_event = {
-        'EventID': event_id,
-        'JourneyID': journey_id,
-        'VehicleID': vehicle_id,
-        'DriverID': driver_id,
-        'EventCategoryID': event_category_id,
+        'event_id': event_id,
+        'journey_id': journey_id,
+        'vehicle_id': vehicle_id,
+        'driver_id': driver_id,
+        'event_category_id': event_category_id,
         'timestamp': timestamp,
         'odometer': odometer,
         'tire_pressure': tire_pressure,
@@ -496,8 +495,8 @@ def send_telemetry_to_eventhub(connection_str, routes, duration_minutes: int = 1
     for vehicle in vehicles:
         ids = generate_vehicle_ids()
         vehicle['vehicle_id'] = 'Truck' + vehicle['route_id']
-        vehicle['journey_id'] = ids['JourneyID']
-        vehicle['driver_id'] = ids['DriverID'],
+        vehicle['journey_id'] = ids['journey_id']
+        vehicle['driver_id'] = ids['driver_id']
         vehicle['previous_data'] =  None
     
       
