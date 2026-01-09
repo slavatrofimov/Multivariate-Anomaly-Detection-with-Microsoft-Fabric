@@ -49,10 +49,3 @@ key_value_replace:
       _ALL_: "$workspace.$id"
     item_type: ["Lakehouse", "Eventhouse", "KQLDatabase"]
     file_path: "**/.platform"
-
-  # Update workspace references in platform files
-  - find_key: $.config.logicalId
-    replace_value:
-      _ALL_: "$workspace.$id"
-    item_type: ["Lakehouse", "Eventhouse", "KQLDatabase"]
-    file_path: "**/.platform"
