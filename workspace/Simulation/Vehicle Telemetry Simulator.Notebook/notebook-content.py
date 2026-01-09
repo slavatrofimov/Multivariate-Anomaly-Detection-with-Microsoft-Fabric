@@ -101,7 +101,7 @@ def get_eventstream_connection_string(eventstream_name, eventstream_source_name)
     eventstream_connection_string = response.json()['accessKeys']['primaryConnectionString']
     return eventstream_connection_string
 
-eventhub_connection_str = get_eventstream_connection_string(eventstream_name = "Vehicle_Eventstream", eventstream_source_name = "VehicleTelemetrySource")
+eventhub_connection_str = get_eventstream_connection_string(eventstream_name = "VehicleTelemetry_Eventstream", eventstream_source_name = "VehicleTelemetrySource")
 
 # METADATA ********************
 
@@ -540,7 +540,7 @@ def send_telemetry_to_eventhub(connection_str, routes, duration_minutes: int = 1
                 print(f"Sent {len(vehicles)} telemetry events to Event Hub")
             
             # Wait before sending next batch
-            time.sleep(2)
+            time.sleep(5)
             # Update current time
             current_time = datetime.now()
             
