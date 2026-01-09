@@ -8,12 +8,12 @@
 # META   },
 # META   "dependencies": {
 # META     "lakehouse": {
-# META       "default_lakehouse": "7609ffdb-850f-4a84-b77f-0babc2769430",
+# META       "default_lakehouse": "ccffad8e-d4fc-4b7d-b3a0-74052b432e9a",
 # META       "default_lakehouse_name": "ReferenceDataLH",
-# META       "default_lakehouse_workspace_id": "0cfd1f4d-2f70-495d-86d2-2e5dd9bb0cfd",
+# META       "default_lakehouse_workspace_id": "ee5caca6-254f-4f4f-9642-236ba78303d4",
 # META       "known_lakehouses": [
 # META         {
-# META           "id": "7609ffdb-850f-4a84-b77f-0babc2769430"
+# META           "id": "ccffad8e-d4fc-4b7d-b3a0-74052b432e9a"
 # META         }
 # META       ]
 # META     }
@@ -85,7 +85,7 @@ def get_eventstream_connection_string(eventstream_name, eventstream_source_name)
     workspace_id = fabric.resolve_workspace_id()
     
     #Get Eventstream Id
-    eventstream_id = eventhouse_id = fabric.resolve_item_id(eventstream_name)
+    eventstream_id = fabric.resolve_item_id(eventstream_name)
     
     # Get Source Id
     client = fabric.FabricRestClient()
@@ -101,7 +101,7 @@ def get_eventstream_connection_string(eventstream_name, eventstream_source_name)
     eventstream_connection_string = response.json()['accessKeys']['primaryConnectionString']
     return eventstream_connection_string
 
-eventhub_connection_str = get_eventstream_connection_string(eventstream_name = "VehicleTelemetry_EventStream", eventstream_source_name = "VehicleTelemetrySource")
+eventhub_connection_str = get_eventstream_connection_string(eventstream_name = "Vehicle_Eventstream", eventstream_source_name = "VehicleTelemetrySource")
 
 # METADATA ********************
 
@@ -540,7 +540,9 @@ def send_telemetry_to_eventhub(connection_str, routes, duration_minutes: int = 1
                 print(f"Sent {len(vehicles)} telemetry events to Event Hub")
             
             # Wait before sending next batch
-            time.sleep(5)
+            time.sleep(2)
+            # Update current time
+            current_time = datetime.now()
             
     except KeyboardInterrupt:
         print("Telemetry generation stopped")
