@@ -49,7 +49,7 @@ table Tags
 		mode: directQuery
 		source =
 				let
-				    Query = "TagMetadata",
+				    Query = "Tags",
 				    Source = AzureDataExplorer.Contents("https://trd-xarh0n5kkf5xbfcwyc.z4.kusto.fabric.microsoft.com", "MultivariateAnomalyDetectionEH", Query, [MaxRows=null, MaxSize=null, NoTruncate=null, AdditionalSetStatements=null])
 				in
 				    Source

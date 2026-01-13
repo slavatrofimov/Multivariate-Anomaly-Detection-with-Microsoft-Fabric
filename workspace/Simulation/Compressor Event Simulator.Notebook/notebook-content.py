@@ -8,14 +8,8 @@
 # META   },
 # META   "dependencies": {
 # META     "lakehouse": {
-# META       "default_lakehouse": "7609ffdb-850f-4a84-b77f-0babc2769430",
-# META       "default_lakehouse_name": "ReferenceDataLH",
-# META       "default_lakehouse_workspace_id": "0cfd1f4d-2f70-495d-86d2-2e5dd9bb0cfd",
-# META       "known_lakehouses": [
-# META         {
-# META           "id": "7609ffdb-850f-4a84-b77f-0babc2769430"
-# META         }
-# META       ]
+# META       "default_lakehouse_name": "",
+# META       "default_lakehouse_workspace_id": ""
 # META     }
 # META   }
 # META }
@@ -24,34 +18,14 @@
 
 # # Compressor Data Stream Simulator
 # ### Simulate streaming data for Realtime Analytics 
-# This notebook will read a delta table and will send it to an event hub endpoint as a stream of events. The notebook will send a certain number of lines for each batches according to the "BatchSize" Parameter. The number of batch size is computed automatically according to the total number of lines and batch size and the while loop will stop once the file has been streamed completely.  
+# This notebook will read seed data from a KQL database. It will then simulate a stream of events by sending small chunks of data to an event hub endpoint of an EventStream. 
+# - Number of records per batch is controlled by the *BatchSize* Parameter. 
+# - The number of batches is computed automatically according to the total number of lines and batch size. 
+# - The simulation will stop once the file has been streamed completely.  
 
 # MARKDOWN ********************
 
-# ### 1. Set the parameters
-
-# CELL ********************
-
-# Configure Azure Event Hub connection parameters
-scada_event_hub_connection_string = spark.sql("SELECT value FROM ReferenceDataLH.secrets WHERE name = 'scada_event_hub_connection_string'").first()[0]
-anomalies_event_hub_connection_string = spark.sql("SELECT value FROM ReferenceDataLH.secrets WHERE name = 'anomalies_event_hub_connection_string'").first()[0]
-
-kustoUri = "https://trd-xarh0n5kkf5xbfcwyc.z4.kusto.fabric.microsoft.com"
-
-# Set batch size (i.e. number of rows from the CSV that being sent at once. use a higher number when wanting a more rapid movement on the report)
-BatchSize = 1
-anomalyBatchSize = 10
-
-# METADATA ********************
-
-# META {
-# META   "language": "python",
-# META   "language_group": "synapse_pyspark"
-# META }
-
-# MARKDOWN ********************
-
-# ### 2. Install required libraries and import dependencies
+# ### 1. Install required libraries and import dependencies
 
 
 # CELL ********************
@@ -73,6 +47,65 @@ import datetime
 import json
 import math
 from azure.eventhub import EventHubProducerClient, EventData
+import sempy.fabric as fabric
+
+# METADATA ********************
+
+# META {
+# META   "language": "python",
+# META   "language_group": "synapse_pyspark"
+# META }
+
+# MARKDOWN ********************
+
+# ### 2. Set the parameters and discover connection strings
+
+# CELL ********************
+
+# Set batch size (i.e. number of rows that being sent at once. use a higher number when wanting a more rapid movement on the report)
+BatchSize = 1
+anomalyBatchSize = 10
+
+# Get connection string for a given Eventstream
+def get_eventstream_connection_string(eventstream_name, eventstream_source_name):
+    workspace_id = fabric.resolve_workspace_id()
+    
+    #Get Eventstream Id
+    eventstream_id = fabric.resolve_item_id(eventstream_name)
+    
+    # Get Source Id
+    client = fabric.FabricRestClient()
+    url = f"v1/workspaces/{workspace_id}/eventstreams/{eventstream_id}/topology"
+    response = client.get(url)
+    for src in response.json().get("sources", []):
+        if src.get("name") == eventstream_source_name and src.get("type") == "CustomEndpoint":
+            eventstream_source_id = src.get("id")
+
+    # Get connection string
+    url = f"v1/workspaces/{workspace_id}/eventstreams/{eventstream_id}/sources/{eventstream_source_id}/connection"
+    response = client.get(url)
+    eventstream_connection_string = response.json()['accessKeys']['primaryConnectionString']
+    return eventstream_connection_string
+
+# Configure Eventstream connection parameters
+scada_event_hub_connection_string = get_eventstream_connection_string(eventstream_name = "ScadaEvents_EventStream", eventstream_source_name = "ScadaEvents-Source")
+anomalies_event_hub_connection_string  = get_eventstream_connection_string(eventstream_name = "Anomalies_EventStream", eventstream_source_name = "Anomalies-Source")
+
+
+# Get Kusto Query URI for a given eventhouse
+def get_kusto_query_uri(eventhouse_name):
+    workspace_id = fabric.resolve_workspace_id()
+    eventhouse_id = fabric.resolve_item_id(eventhouse_name)
+    client = fabric.FabricRestClient()
+    url = f"v1/workspaces/{workspace_id}/eventhouses/{eventhouse_id}"
+    response = client.get(url)
+    kusto_query_uri = response.json()['properties']['queryServiceUri']
+    return kusto_query_uri
+
+kusto_query_uri = get_kusto_query_uri('MultivariateAnomalyDetectionEH')
+
+# The database to write the data
+kql_database = "MultivariateAnomalyDetectionEH"
 
 # METADATA ********************
 
@@ -147,7 +180,7 @@ def safe_submit(fn: Callable, *args, **kwargs) -> Future:
 # CELL ********************
 
 #Define a function to transform Pandas dataframe row into a set of messages for telemetry
-def rows_to_metrics_json(df, timestamp_col="Timestamp"):
+def rows_to_metrics_json(df, timestamp_col="timestamp"):
     """
     Accepts a list of Spark DataFrame rows (Row objects) and returns a JSON string
     with each cell (except timestamp) as a separate object in the 'metrics' array.
@@ -204,8 +237,8 @@ def rows_to_anomalies_json(df):
 
 # CELL ********************
 
-# Function to detect and store anomalies in a KQL database
-def detect_and_store_anomalies_kql(asset):
+# Function to detect anomalies and send to Eventstream
+def detect_and_store_anomalies_kql(kusto_query_uri, kql_database, asset):
     # Get anomalies using multivariate anomaly detection
     kustoQuery = 'mvad_get_new_anomalies("' + asset + '")'
 
@@ -218,8 +251,8 @@ def detect_and_store_anomalies_kql(asset):
         kustoDf  = spark.read\
         .format("com.microsoft.kusto.spark.synapse.datasource")\
         .option("accessToken", accessToken)\
-        .option("kustoCluster", kustoUri)\
-        .option("kustoDatabase", database)\
+        .option("kustoCluster", kusto_query_uri)\
+        .option("kustoDatabase", kql_database)\
         .option("kustoQuery", kustoQuery).load()
     except Exception as e:
         print(e) 
@@ -272,12 +305,43 @@ def detect_and_store_anomalies_kql(asset):
 
 # CELL ********************
 
-#Read in the comressor data into a dataframe and transform to Pandas
-df1 = spark.sql("SELECT * FROM ReferenceDataLH.compressordata_8K2").toPandas().sort_values("Timestamp", ascending=True)
-df1 = df1.reset_index(drop=True)
-#For the second compressor, we intentionally sort the data in reverse order to simulate differences
-df2 = spark.sql("SELECT * FROM ReferenceDataLH.compressordata_MBZ").toPandas().sort_values("Timestamp", ascending=False)
-df2 = df2.reset_index(drop=True)
+#Read in data for the two compressors into dataframes and transform to Pandas
+
+# Helper function to retrieve data for the specific asset from a KQL database
+def retrieve_kql_asset_telemetry(kusto_query_uri, kql_database, asset_id):
+    """
+    Retrieve telemetry data from KQL Database for a specific asset.
+    
+    Parameters:
+    - kusto_query_uri: query uri of the Eventhouse
+    - kql_database: Name of the KQL database
+    - asset_id: Asset identifier to filter data
+    
+    Returns:
+    - Spark DataFrame with columns relevant to the asset
+    """
+    
+    # The access credentials for the write
+    kqlAccessToken = mssparkutils.credentials.getToken('kusto')
+
+    kql_query = f"""
+    AssetTelemetry('{asset_id}')
+    | top 35000 by timestamp asc
+    """
+
+    # Execute KQL query using Spark connector
+    sdf = spark.read.format("com.microsoft.kusto.spark.datasource") \
+        .option("kustoCluster", f"{kusto_query_uri}") \
+        .option("kustoDatabase", kql_database) \
+        .option("kustoQuery", kql_query) \
+        .option("accessToken", kqlAccessToken ) \
+        .load()
+
+    return sdf
+
+#Retrieve data and store in dataframes
+df1 = retrieve_kql_asset_telemetry(kusto_query_uri, kql_database, '8K2').toPandas().reset_index(drop=True)
+df2 = retrieve_kql_asset_telemetry(kusto_query_uri, kql_database, 'MBZ').toPandas().reset_index(drop=True)
 
 # METADATA ********************
 
@@ -325,13 +389,13 @@ while BatchCounter < TargetBatchCount:
     #Kick-of detection of multivariate anomalies after each set of 180 batches
     if BatchCounter >= 300 and BatchCounter % 240 == 120:
         # Submit asynchronously
-        future = submit_async(detect_and_store_anomalies_kql('8K2'))
+        future = submit_async(detect_and_store_anomalies_kql(kusto_query_uri, kql_database, '8K2'))
     if BatchCounter >= 300 and BatchCounter % 240 == 0:
         # Submit asynchronously
-        future = submit_async(detect_and_store_anomalies_kql('MBZ'))
+        future = submit_async(detect_and_store_anomalies_kql(kusto_query_uri, kql_database, 'MBZ'))
     # Printing some stats to track the stream
-    if BatchCounter %60==0:                
-        print ('--Batch #:' + str(BatchCounter) + '; rows: ' + str(x) + ' - ' + str(y)) 
+    if BatchCounter %100==0:                
+        print ('--Processed batch #:' + str(BatchCounter) + '; last row: ' + str(y)) 
     #Setting the control variable for the next pass
     RowCounter   = RowCounter + i
     RowRemaining = max(0,(z-RowCounter))

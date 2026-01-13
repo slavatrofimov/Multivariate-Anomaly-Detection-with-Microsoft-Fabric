@@ -1,5 +1,5 @@
 {
-  "schema_version": 63,
+  "schema_version": 67,
   "pagesNavWidth": 227,
   "autoRefresh": {
     "enabled": true,
@@ -110,7 +110,6 @@
       "visualOptions": {
         "table__enableRenderLinks": true,
         "colorRulesDisabled": true,
-        "colorStyle": "light",
         "crossFilterDisabled": false,
         "drillthroughDisabled": false,
         "crossFilter": [],
@@ -138,7 +137,6 @@
         "multiStat__textSize": "small",
         "multiStat__valueColumn": null,
         "colorRulesDisabled": false,
-        "colorStyle": "light",
         "colorRules": []
       }
     },
@@ -160,7 +158,6 @@
       "visualOptions": {
         "table__enableRenderLinks": true,
         "colorRulesDisabled": true,
-        "colorStyle": "light",
         "crossFilterDisabled": false,
         "drillthroughDisabled": false,
         "crossFilter": [],
@@ -335,7 +332,7 @@
         "kind": "inline",
         "dataSourceId": "05aa618a-2f27-44bd-b7a4-11bed8435454"
       },
-      "text": "TagMetadata\n| where asset  == _asset\n| project tag, label = strcat(tag, ' (', metric, ')')\n| order by tag asc ",
+      "text": "Tags\n| where asset  == _asset\n| project tag, label = strcat(tag, ' (', metric, ')')\n| order by tag asc ",
       "id": "f592e200-eed8-43a0-baaa-2f83b6be5412",
       "usedVariables": [
         "_asset"

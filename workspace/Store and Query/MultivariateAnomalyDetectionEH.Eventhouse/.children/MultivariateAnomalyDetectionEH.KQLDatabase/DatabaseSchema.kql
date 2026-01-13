@@ -7,14 +7,11 @@
 .create-merge table ScadaTelemetryRaw (metrics:dynamic, EventProcessedUtcTime:datetime, PartitionId:long, EventEnqueuedUtcTime:datetime) 
 .create-merge table AssetAnomaliesMVADRaw (anomalies:dynamic, EventProcessedUtcTime:datetime, PartitionId:long, EventEnqueuedUtcTime:datetime) 
 .create-merge table AssetAnomaliesMVADInterpretation (is_anomaly:bool, asset:string, timestamp:datetime, score:real, severity:real, tag:string, contribution_score:real, correlation_changes:dynamic) 
-.create-merge table TagMetadata (asset:string, tag:string, metric:string, component:string) 
 .create-merge table AssetMVADFeatures (tag:string, ordinal:int, asset:string) 
 .create-merge table AssetMVADModels (asset:string, model_uri:string, sliding_window:long, effective_date:datetime) 
-.create-merge table VehicleTelemetryRaw (EventID:guid, JourneyID:string, VehicleID:string, DriverID:dynamic, EventCategoryID:string, timestamp:datetime, odometer:real, tire_pressure:dynamic, lat:real, lon:real, vehicle_speed:real, engine_rpm:real, transmission_gear_position:int, gear_lever_position:int, accelerator_pedal_position:real, brake_pedal_position:real, torque_at_transmission:real, engine_temp:real, transmission_temp:real, steering_wheel_angle:real, door_status:string, ignition_status:int, headlamp_status:int, high_beam_status:int, windshield_wiper_status:int, fuel_level:real, parking_brake_status:string) 
-.create-or-alter table VehicleTelemetryRaw ingestion json mapping 'VehicleTelemetryRaw_mapping'
-```
-[{"Properties":{"Path":"$['EventID']"},"column":"EventID","datatype":""},{"Properties":{"Path":"$['JourneyID']"},"column":"JourneyID","datatype":""},{"Properties":{"Path":"$['VehicleID']"},"column":"VehicleID","datatype":""},{"Properties":{"Path":"$['DriverID']"},"column":"DriverID","datatype":""},{"Properties":{"Path":"$['EventCategoryID']"},"column":"EventCategoryID","datatype":""},{"Properties":{"Path":"$['timestamp']"},"column":"timestamp","datatype":""},{"Properties":{"Path":"$['odometer']"},"column":"odometer","datatype":""},{"Properties":{"Path":"$['tire_pressure']"},"column":"tire_pressure","datatype":""},{"Properties":{"Path":"$['lat']"},"column":"lat","datatype":""},{"Properties":{"Path":"$['lon']"},"column":"lon","datatype":""},{"Properties":{"Path":"$['vehicle_speed']"},"column":"vehicle_speed","datatype":""},{"Properties":{"Path":"$['engine_rpm']"},"column":"engine_rpm","datatype":""},{"Properties":{"Path":"$['transmission_gear_position']"},"column":"transmission_gear_position","datatype":""},{"Properties":{"Path":"$['gear_lever_position']"},"column":"gear_lever_position","datatype":""},{"Properties":{"Path":"$['accelerator_pedal_position']"},"column":"accelerator_pedal_position","datatype":""},{"Properties":{"Path":"$['brake_pedal_position']"},"column":"brake_pedal_position","datatype":""},{"Properties":{"Path":"$['torque_at_transmission']"},"column":"torque_at_transmission","datatype":""},{"Properties":{"Path":"$['engine_temp']"},"column":"engine_temp","datatype":""},{"Properties":{"Path":"$['transmission_temp']"},"column":"transmission_temp","datatype":""},{"Properties":{"Path":"$['steering_wheel_angle']"},"column":"steering_wheel_angle","datatype":""},{"Properties":{"Path":"$['door_status']"},"column":"door_status","datatype":""},{"Properties":{"Path":"$['ignition_status']"},"column":"ignition_status","datatype":""},{"Properties":{"Path":"$['headlamp_status']"},"column":"headlamp_status","datatype":""},{"Properties":{"Path":"$['high_beam_status']"},"column":"high_beam_status","datatype":""},{"Properties":{"Path":"$['windshield_wiper_status']"},"column":"windshield_wiper_status","datatype":""},{"Properties":{"Path":"$['fuel_level']"},"column":"fuel_level","datatype":""},{"Properties":{"Path":"$['parking_brake_status']"},"column":"parking_brake_status","datatype":""}]
-```
+.create-merge table VehicleTelemetryRaw (event_id:string, journey_id:string, vehicle_id:string, driver_id:string, timestamp:datetime, odometer:real, lat:real, lon:real, vehicle_speed:real, engine_rpm:real, transmission_gear_position:int, gear_lever_position:int, accelerator_pedal_position:real, brake_pedal_position:real, torque_at_transmission:real, engine_temp:real, transmission_temp:real, steering_wheel_angle:real, door_status:string, ignition_status:int, headlamp_status:int, high_beam_status:int, windshield_wiper_status:int, fuel_level:real, parking_brake_status:string) 
+.create-merge table Tags (tag:string, tag_description:string, category:string, threshold_low:real, threshold_high:real, threshold_type:string, agrregation_rule:string, uom:string, legacy_tag_id:string, metric:string, component:string, asset:string) 
+.create-merge table Assets (AssetID:string, AssetCode:string, Category:string, AssetType:string, Manufacturer:string, Model:string, InstallDate:string, Location:string, OperatingConditions:string, FailureModes:string, MaintenanceStrategy:string, LastMaintenance:string, MTBF_hours:string, Availability_pct:real, Latitude:real, Longitude:real) 
 .create-or-alter function with (skipvalidation = "true") ParseScadaTelemetry() {
     ScadaTelemetryRaw
     | mv-expand(metrics)
@@ -108,12 +105,6 @@ else:
      result
     | project bin_timespan = case(_bins <= _max_bins, _bin_timespan, isnotempty(_standard_timespan), _standard_timespan, strcat(tostring(toint(_duration / (_max_bins - 1))), 'sec'))
 }
-.create-or-alter function with (skipvalidation = "true") Tags() {
-    external_table('Tags')
-| extend metric = strcat(category, ' [', uom, ']'), component = strcat(category, '-', tag_id)
-| project-rename tag = tag_id
-| extend asset = substring(tag, 0, 3)
-}
 .create-or-alter function with (skipvalidation = "true") ParseAssetAnomaliesMVAD() {
     AssetAnomaliesMVADRaw
 | mv-expand anomalies
@@ -132,11 +123,8 @@ AssetAnomaliesMVAD
 | extend tag = tostring(interpretation.variable_name), contribution_score = todouble(interpretation.contribution_score), correlation_changes = interpretation.correlation_changes
 | project-away interpretation
 }
-.create-or-alter function with (skipvalidation = "true") Assets() {
-    external_table('Assets')
-}
 .create-or-alter function with (docstring = "Aggregate telemetry for a desired asset and pivot it into a wide table with a column for each metric.", skipvalidation = "true") AssetTelemetry(_asset:string, previous_watermark:datetime=datetime(null)) {
-    TagMetadata
+    Tags
     | where asset == _asset
     | project tag
     | join kind=inner ScadaTelemetry on tag

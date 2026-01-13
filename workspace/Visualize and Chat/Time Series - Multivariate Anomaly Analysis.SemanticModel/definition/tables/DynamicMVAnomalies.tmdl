@@ -109,12 +109,12 @@ table DynamicMVAnomalies
 				    let bin_timespan_label = toscalar(get_bin_timespan('" & relative_time_period & "', '" & DateTime.ToText(_start_date) & "', '" & DateTime.ToText(_end_date) & "', '" & _bin_timespan & "', " & Number.ToText(_max_bins) & "));
 				    let bin_timespan = totimespan(bin_timespan_label);      
 				    let is_one_asset = toscalar(
-				    TagMetadata
+				    Tags
 				    | where tag in (" & _tags & ")
 				    | summarize asset_count = count_distinct(asset)
 				    | project asset_count == 1);
 				    let _asset = toscalar(
-				    TagMetadata
+				    Tags
 				    | where is_one_asset
 				    | where tag in (" & _tags & ")    
 				    | project asset 

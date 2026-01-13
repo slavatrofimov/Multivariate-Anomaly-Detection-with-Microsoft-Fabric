@@ -162,7 +162,7 @@ table DynamicQuery
 				    | project tag, todatetime(timestamp), todouble(value), todouble(anomaly)
 				    | lookup kind=leftouter (MVADAnomalies) on tag, timestamp
 				    | project tag, timestamp, value, anomaly = iif(anomaly != 0 or mvad_anomaly != 0, value, double(null)), individual_anomaly = iif(anomaly != 0, value, double(null)), mvad_anomaly = iif(mvad_anomaly != 0, mvad_anomaly, double(null)), anomaly_indicator = strcat(iif(anomaly != 0, ' ● Individual', ''), iif(mvad_anomaly > 0, ' ● Multivariate', ''))
-				    | lookup kind=leftouter (TagMetadata | project tag, metric, component) on tag
+				    | lookup kind=leftouter (Tags | project tag, metric, component) on tag
 				    | extend marker_color = iif(individual_anomaly>0, 'FireBrick', iif(mvad_anomaly >0, 'Orange', ''))",
 				    Source = AzureDataExplorer.Contents("https://trd-xarh0n5kkf5xbfcwyc.z4.kusto.fabric.microsoft.com", "MultivariateAnomalyDetectionEH", Query, [MaxRows=null, MaxSize=null, NoTruncate=null, AdditionalSetStatements=null])
 				in

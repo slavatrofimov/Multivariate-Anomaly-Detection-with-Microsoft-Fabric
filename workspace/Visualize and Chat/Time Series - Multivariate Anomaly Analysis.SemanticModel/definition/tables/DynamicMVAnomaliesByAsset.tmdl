@@ -79,7 +79,7 @@ table DynamicMVAnomaliesByAsset
 				    let bin_timespan = totimespan(bin_timespan_label);             
 				    let _asset = '" &_asset &"';    
 				    let _bookends = materialize(
-				    TagMetadata
+				    Tags
 				    | where asset == ('" & _asset & "')
 				    | join kind = inner ScadaTelemetry on tag
 				    | where timestamp  between (_start .. _end)

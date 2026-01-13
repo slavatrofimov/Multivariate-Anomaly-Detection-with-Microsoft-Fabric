@@ -8,12 +8,12 @@
 # META   },
 # META   "dependencies": {
 # META     "lakehouse": {
-# META       "default_lakehouse": "7609ffdb-850f-4a84-b77f-0babc2769430",
+# META       "default_lakehouse": "ccffad8e-d4fc-4b7d-b3a0-74052b432e9a",
 # META       "default_lakehouse_name": "ReferenceDataLH",
-# META       "default_lakehouse_workspace_id": "0cfd1f4d-2f70-495d-86d2-2e5dd9bb0cfd",
+# META       "default_lakehouse_workspace_id": "ee5caca6-254f-4f4f-9642-236ba78303d4",
 # META       "known_lakehouses": [
 # META         {
-# META           "id": "7609ffdb-850f-4a84-b77f-0babc2769430"
+# META           "id": "ccffad8e-d4fc-4b7d-b3a0-74052b432e9a"
 # META         }
 # META       ]
 # META     }
@@ -27,14 +27,14 @@
 # Simulates realistic vehicle sensor telemetry from a fleet following road networks with correlated parameters.
 # 
 # **Features**: Multi-vehicle fleet simulation with route following, realistic sensor correlations (speed ↔ RPM ↔ temp ↔ pedals), continuous data streaming  
-# **Output**: Telemetry events sent to Azure Event Hub every 2 seconds  
+# **Output**: Telemetry events sent to Azure Event Hub every few seconds  
 # **Duration**: Typically runs for 2 hours (120 minutes) generating continuous vehicle data  
 # **Progress**: Status printed every batch showing vehicle count, elapsed time, and remaining duration
 
 # CELL ********************
 
 %pip install faker --quiet
-%pip install azure-eventhub --quiet
+%pip install azure-eventhub>=5.11.0--quiet
 
 # METADATA ********************
 
@@ -49,11 +49,10 @@ import requests
 import json
 import random
 import time
-import datetime
 import uuid
 import math
 import os
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import sempy.fabric as fabric
 import azure.eventhub
 from azure.eventhub import EventHubProducerClient, EventData
@@ -85,7 +84,7 @@ def get_eventstream_connection_string(eventstream_name, eventstream_source_name)
     workspace_id = fabric.resolve_workspace_id()
     
     #Get Eventstream Id
-    eventstream_id = eventhouse_id = fabric.resolve_item_id(eventstream_name)
+    eventstream_id = fabric.resolve_item_id(eventstream_name)
     
     # Get Source Id
     client = fabric.FabricRestClient()
@@ -101,7 +100,7 @@ def get_eventstream_connection_string(eventstream_name, eventstream_source_name)
     eventstream_connection_string = response.json()['accessKeys']['primaryConnectionString']
     return eventstream_connection_string
 
-eventhub_connection_str = get_eventstream_connection_string(eventstream_name = "VehicleTelemetry_EventStream", eventstream_source_name = "VehicleTelemetrySource")
+eventhub_connection_str = get_eventstream_connection_string(eventstream_name = "VehicleTelemetry_Eventstream", eventstream_source_name = "VehicleTelemetrySource")
 
 # METADATA ********************
 
@@ -139,10 +138,9 @@ except Exception as e:
 def generate_vehicle_ids():
     """Generate IDs for a vehicle telemetry event"""
     return {
-        'EventID': str(uuid.uuid4()),
-        'JourneyID': f"journey_{fake.uuid4()[:8]}",
-        'DriverID': f"driver_{fake.uuid4()[:8]}",
-        'EventCategoryID': random.randint(1, 5)
+        'event_id': str(uuid.uuid4()),
+        'journey_id': f"journey_{fake.uuid4()[:8]}",
+        'driver_id': f"driver_{fake.uuid4()[:8]}"
     }
 
 def calculate_rpm_from_speed_and_gear(speed, gear):
@@ -311,34 +309,6 @@ def generate_correlated_engine_data(previous_data=None, time_delta=1.0):
         'steering_wheel_angle': round(steering_wheel_angle, 2)
     }
 
-def generate_tire_pressure(previous_data=None):
-    """
-    Generate realistic tire pressure data
-    If previous data exists, make minor adjustments rather than generating brand new values
-    """
-    if previous_data and 'tire_pressure' in previous_data:
-        # Start with previous values and make small adjustments
-        previous_pressures = previous_data['tire_pressure']
-        tire_pressure = {}
-        
-        for i in range(1, 7):
-            key = str(i)
-            prev_value = previous_pressures.get(key, random.uniform(30, 35))
-            # Small random fluctuation (±0.2 PSI)
-            new_value = prev_value + random.uniform(-0.2, 0.2)
-            tire_pressure[key] = round(min(70, max(25, new_value)), 2)
-    else:
-        # Generate new tire pressure values
-        base_pressure = random.uniform(32, 36)
-        variation = 2.0  # PSI variation between tires
-        
-        tire_pressure = {
-            str(i): round(base_pressure + random.uniform(-variation, variation), 2)
-            for i in range(1, 7)
-        }
-    
-    return tire_pressure
-
 def generate_vehicle_status(previous_data=None):
     """
     Generate vehicle status data
@@ -403,7 +373,7 @@ def generate_vehicle_status(previous_data=None):
         'high_beam_status': high_beam_status,
         'windshield_wiper_status': windshield_wiper_status,
         'fuel_level': fuel_level,
-        'parking_brake_status': ""  # Empty as per requirements
+        'parking_brake_status': "off"  # Empty as per requirements
     }
 
 def generate_telemetry_event(vehicle_id=None, journey_id=None, driver_id=None, previous_data=None, lat=None, lon=None, time_delta=1.0):
@@ -422,20 +392,16 @@ def generate_telemetry_event(vehicle_id=None, journey_id=None, driver_id=None, p
     # Generate IDs if not provided
     if not journey_id or not driver_id:
         ids = generate_vehicle_ids()
-        journey_id = journey_id or ids['JourneyID']
-        driver_id = driver_id or ids['DriverID']
+        journey_id = journey_id or ids['journey_id']
+        driver_id = driver_id or ids['driver_id']
     
     event_id = str(uuid.uuid4())
-    event_category_id = random.randint(1, 5)
     
     # Get engine and performance data
     engine_data = generate_correlated_engine_data(previous_data, time_delta)
     
     # Get vehicle status
     vehicle_status = generate_vehicle_status(previous_data)
-    
-    # Get tire pressure
-    tire_pressure = generate_tire_pressure(previous_data)
     
     # Generate or update odometer reading
     if previous_data and 'odometer' in previous_data:
@@ -446,18 +412,16 @@ def generate_telemetry_event(vehicle_id=None, journey_id=None, driver_id=None, p
         odometer = round(random.uniform(0, 250000.00), 2)
     
     # Timestamp
-    timestamp = datetime.utcnow().isoformat()
-    
+    timestamp = datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+
     # Combine all data
     telemetry_event = {
-        'EventID': event_id,
-        'JourneyID': journey_id,
-        'VehicleID': vehicle_id,
-        'DriverID': driver_id,
-        'EventCategoryID': event_category_id,
+        'event_id': event_id,
+        'journey_id': journey_id,
+        'vehicle_id': vehicle_id,
+        'driver_id': driver_id,
         'timestamp': timestamp,
         'odometer': odometer,
-        'tire_pressure': tire_pressure,
         'lat': lat,
         'lon': lon,
         **engine_data,
@@ -496,8 +460,8 @@ def send_telemetry_to_eventhub(connection_str, routes, duration_minutes: int = 1
     for vehicle in vehicles:
         ids = generate_vehicle_ids()
         vehicle['vehicle_id'] = 'Truck' + vehicle['route_id']
-        vehicle['journey_id'] = ids['JourneyID']
-        vehicle['driver_id'] = ids['DriverID'],
+        vehicle['journey_id'] = ids['journey_id']
+        vehicle['driver_id'] = ids['driver_id']
         vehicle['previous_data'] =  None
     
       
@@ -505,6 +469,8 @@ def send_telemetry_to_eventhub(connection_str, routes, duration_minutes: int = 1
     end_time = start_time + timedelta(minutes=duration_minutes)
     
     current_time = start_time
+
+    time_delta = 5.0  # seconds between readings
    
     try:
         while current_time < end_time:
@@ -525,7 +491,7 @@ def send_telemetry_to_eventhub(connection_str, routes, duration_minutes: int = 1
                     previous_data=vehicle['previous_data'],
                     lat = vehicle['points'][current_point][0],
                     lon = vehicle['points'][current_point][1],
-                    time_delta=1.0  # Assuming 1 seconds between readings
+                    time_delta=time_delta  # Time between readings
                 )
                 
                 # Update previous data for next iteration
@@ -540,7 +506,9 @@ def send_telemetry_to_eventhub(connection_str, routes, duration_minutes: int = 1
                 print(f"Sent {len(vehicles)} telemetry events to Event Hub")
             
             # Wait before sending next batch
-            time.sleep(5)
+            time.sleep(time_delta)
+            # Update current time
+            current_time = datetime.now()
             
     except KeyboardInterrupt:
         print("Telemetry generation stopped")
