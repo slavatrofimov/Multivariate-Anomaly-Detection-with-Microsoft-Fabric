@@ -114,7 +114,7 @@ eventhub_connection_str = get_eventstream_connection_string(eventstream_name = "
 #Read routes from a Lakehouse
 try:
     with open("/lakehouse/default/Files/data/vehicle_route_points.json", 'r') as f:
-        routes = json.loads(json.load(f))
+        routes = json.load(f)
     
     print('Successfully retrieved stored routes.')
 
