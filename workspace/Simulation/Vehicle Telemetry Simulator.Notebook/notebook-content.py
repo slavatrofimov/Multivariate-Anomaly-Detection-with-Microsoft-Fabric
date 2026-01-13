@@ -34,7 +34,7 @@
 # CELL ********************
 
 %pip install faker --quiet
-%pip install azure-eventhub --quiet
+%pip install azure-eventhub>=5.11.0--quiet
 
 # METADATA ********************
 
@@ -140,8 +140,7 @@ def generate_vehicle_ids():
     return {
         'event_id': str(uuid.uuid4()),
         'journey_id': f"journey_{fake.uuid4()[:8]}",
-        'driver_id': f"driver_{fake.uuid4()[:8]}",
-        'event_category_id': random.randint(1, 5)
+        'driver_id': f"driver_{fake.uuid4()[:8]}"
     }
 
 def calculate_rpm_from_speed_and_gear(speed, gear):
@@ -310,34 +309,6 @@ def generate_correlated_engine_data(previous_data=None, time_delta=1.0):
         'steering_wheel_angle': round(steering_wheel_angle, 2)
     }
 
-def generate_tire_pressure(previous_data=None):
-    """
-    Generate realistic tire pressure data
-    If previous data exists, make minor adjustments rather than generating brand new values
-    """
-    if previous_data and 'tire_pressure' in previous_data:
-        # Start with previous values and make small adjustments
-        previous_pressures = previous_data['tire_pressure']
-        tire_pressure = {}
-        
-        for i in range(1, 7):
-            key = str(i)
-            prev_value = previous_pressures.get(key, random.uniform(30, 35))
-            # Small random fluctuation (±0.2 PSI)
-            new_value = prev_value + random.uniform(-0.2, 0.2)
-            tire_pressure[key] = round(min(70, max(25, new_value)), 2)
-    else:
-        # Generate new tire pressure values
-        base_pressure = random.uniform(32, 36)
-        variation = 2.0  # PSI variation between tires
-        
-        tire_pressure = {
-            str(i): round(base_pressure + random.uniform(-variation, variation), 2)
-            for i in range(1, 7)
-        }
-    
-    return tire_pressure
-
 def generate_vehicle_status(previous_data=None):
     """
     Generate vehicle status data
@@ -425,16 +396,12 @@ def generate_telemetry_event(vehicle_id=None, journey_id=None, driver_id=None, p
         driver_id = driver_id or ids['driver_id']
     
     event_id = str(uuid.uuid4())
-    event_category_id = random.randint(1, 5)
     
     # Get engine and performance data
     engine_data = generate_correlated_engine_data(previous_data, time_delta)
     
     # Get vehicle status
     vehicle_status = generate_vehicle_status(previous_data)
-    
-    # Get tire pressure
-    tire_pressure = generate_tire_pressure(previous_data)
     
     # Generate or update odometer reading
     if previous_data and 'odometer' in previous_data:
@@ -453,10 +420,8 @@ def generate_telemetry_event(vehicle_id=None, journey_id=None, driver_id=None, p
         'journey_id': journey_id,
         'vehicle_id': vehicle_id,
         'driver_id': driver_id,
-        'event_category_id': event_category_id,
         'timestamp': timestamp,
         'odometer': odometer,
-        'tire_pressure': tire_pressure,
         'lat': lat,
         'lon': lon,
         **engine_data,
