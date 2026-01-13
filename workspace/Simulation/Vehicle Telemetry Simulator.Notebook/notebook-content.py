@@ -469,6 +469,8 @@ def send_telemetry_to_eventhub(connection_str, routes, duration_minutes: int = 1
     end_time = start_time + timedelta(minutes=duration_minutes)
     
     current_time = start_time
+
+    time_delta = 5.0  # seconds between readings
    
     try:
         while current_time < end_time:
@@ -489,7 +491,7 @@ def send_telemetry_to_eventhub(connection_str, routes, duration_minutes: int = 1
                     previous_data=vehicle['previous_data'],
                     lat = vehicle['points'][current_point][0],
                     lon = vehicle['points'][current_point][1],
-                    time_delta=1.0  # Assuming 1 seconds between readings
+                    time_delta=time_delta  # Assuming 1 seconds between readings
                 )
                 
                 # Update previous data for next iteration
@@ -504,7 +506,7 @@ def send_telemetry_to_eventhub(connection_str, routes, duration_minutes: int = 1
                 print(f"Sent {len(vehicles)} telemetry events to Event Hub")
             
             # Wait before sending next batch
-            time.sleep(5)
+            time.sleep(time_delta)
             # Update current time
             current_time = datetime.now()
             
