@@ -27,7 +27,7 @@
 # Simulates realistic vehicle sensor telemetry from a fleet following road networks with correlated parameters.
 # 
 # **Features**: Multi-vehicle fleet simulation with route following, realistic sensor correlations (speed ↔ RPM ↔ temp ↔ pedals), continuous data streaming  
-# **Output**: Telemetry events sent to Azure Event Hub every 2 seconds  
+# **Output**: Telemetry events sent to Azure Event Hub every few seconds  
 # **Duration**: Typically runs for 2 hours (120 minutes) generating continuous vehicle data  
 # **Progress**: Status printed every batch showing vehicle count, elapsed time, and remaining duration
 
@@ -491,7 +491,7 @@ def send_telemetry_to_eventhub(connection_str, routes, duration_minutes: int = 1
                     previous_data=vehicle['previous_data'],
                     lat = vehicle['points'][current_point][0],
                     lon = vehicle['points'][current_point][1],
-                    time_delta=time_delta  # Assuming 1 seconds between readings
+                    time_delta=time_delta  # Time between readings
                 )
                 
                 # Update previous data for next iteration

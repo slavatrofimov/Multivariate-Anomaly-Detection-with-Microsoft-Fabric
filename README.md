@@ -127,7 +127,7 @@ The installer will:
 
 ### Step 4: Enable Python plugin on the Eventhouse
 
-1. Navigate to the **MultivareAnomalyDetectionEH** eventhouse in your workspace.
+1. Navigate to the **MultivariateAnomalyDetectionEH** eventhouse in your workspace.
 2. Click on **Plugins** and enable the *Python 3.11.7 (preview)* plugin as illustrated below.
 ![Enable Python Plugin](/media/Enable%20Python%20Extension.png)
 
@@ -155,7 +155,7 @@ Data Generated: batches of industrial telemetry sent out every ~1 second
 ```
 Location: Simulation/Vehicle Telemetry Simulator
 Duration: Continuous route playback
-Data Generated: GPS coordinates and operational vehicle telemetry every 10 seconds
+Data Generated: GPS coordinates and operational vehicle telemetry every 5 seconds
 ```
 
 1. Open the **Vehicle Telemetry Simulator** notebook

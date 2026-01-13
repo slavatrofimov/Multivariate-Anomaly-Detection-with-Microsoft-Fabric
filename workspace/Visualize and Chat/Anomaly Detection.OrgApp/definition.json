@@ -23,14 +23,14 @@
       "elementId": "0e13e45d-c3b0-4f63-b387-fc8491da2484",
       "itemType": "Map",
       "itemLogicalId": "b8c33892-a62c-92f2-4449-5ccee722d093",
-      "displayName": "Asset_Status"
+      "displayName": "Asset Status"
     },
     {
       "elementType": "item",
       "elementId": "8d28bdb8-0dd1-4a68-8b87-5c42e14f710a",
       "itemType": "KQLDashboard",
       "itemLogicalId": "38ad0d79-ad58-be0f-4db8-ab5878394f0e",
-      "displayName": "SCADA Telemetry + Anomalies"
+      "displayName": "Telemetry + Anomalies"
     },
     {
       "elementType": "item",
