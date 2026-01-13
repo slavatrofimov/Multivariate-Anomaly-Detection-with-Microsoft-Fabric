@@ -13,16 +13,29 @@
       "name": "Eventhouse",
       "type": "Eventhouse",
       "properties": {
-        "dataIngestionMode": "DirectIngestion",
+        "dataIngestionMode": "ProcessedIngestion",
         "workspaceId": "00000000-0000-0000-0000-000000000000",
         "itemId": "7e5f836f-fbd4-98a5-4b93-408b3d6c2c84",
+        "databaseName": "MultivariateAnomalyDetectionEH",
         "tableName": "VehicleTelemetryRaw",
-        "connectionName": "Vehicle_Eventstream_PowerUtilitiesEH-Veh",
-        "mappingRuleName": "VehicleTelemetryRaw_mapping"
+        "inputSerialization": {
+          "type": "Json",
+          "properties": {
+            "encoding": "UTF8"
+          }
+        }
       },
       "inputNodes": [
         {
           "name": "Vehicle_Eventstream-stream"
+        }
+      ],
+      "inputSchemas": [
+        {
+          "name": "Vehicle_Eventstream-stream",
+          "schema": {
+            "columns": []
+          }
         }
       ]
     }
