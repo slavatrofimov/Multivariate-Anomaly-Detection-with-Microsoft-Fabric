@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Report",
+    "displayName": "TimeSeriesMultivariateAnomalyAnalysis"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "8e66b1b3-1af4-8758-4a52-71ab37875d50"
+  }
+}

@@ -64,7 +64,7 @@ Note that this diagram represents a hypothetical real-world solution. This solut
 - **Eventhouse (KQL Database)**: Hot path for real-time queries with minimal latency
 - **Lakehouse (Delta Tables)**: Storage for reference data
 
-#### Machine Learning
+#### MachineLearning
 - **Spark Notebooks** are used to train machine learning models using specialized multivariate anomaly detection algorithms.
 - **Experiments** are used to track machine learning runs using MLFlow.
 - **Machine Learning Models** are registered and used for inferencing.
@@ -105,24 +105,32 @@ Note that this diagram represents a hypothetical real-world solution. This solut
 5. Click **Apply**
 
 
-### Step 2: Download the Solution Installer notebook
-1. Download the [Solution Installer notebook](/deploy/Solution%20Installer.ipynb) to a local folder on your computer.
-
-
-### Step 3: Import and Run Solution Installer
-1. In your Fabric workspace, click **+ New** → **Import notebook**
-2. On your local computer, navigate to the folder where you saved the **Solution Installer.ipynb** notebook.
-3. Upload and open the **Solution Installer** notebook
-4. Click **Run all** to execute the deployment
+### Step 2: Install the solution 
+1. In your Fabric workspace, click **+ New** → **Notebook**
+2. Add the following code snippets to two separate code cells:
+    ```python
+    pip install fabric-jumpstart
+    ```
+    ```python
+    import fabric_jumpstart as jumpstart
+    jumpstart.install("multivariate-anomaly-detection")
+    ```
+3. Run the notebook
 
 The installer will:
-- ✅ Install required Python packages
 - ✅ Download solution files from GitHub
 - ✅ Deploy all Fabric items (Eventhouses, Lakehouses, Eventstreams, Notebooks, Reports)
-- ✅ Configure item dependencies and relationships
 - ✅ Import sample data files
-- ✅ Perform post-deployment configuration tasks
+
+### Step 3: Run the post-deployment notebook
+1. In your Fabric workspace, navigate to **+ grid-intelligence** → **Install** → **PostDeploymentConfig** and open the notebook
+2. Run the notebook
+
+The notebook will:
+- ✅ Deploy an additional item (Fabric Map)
 - ✅ Configure credentials and refresh all semantic models
+- ✅ Post-process sample data
+- ✅ Configure shortcuts in the KQL Database
 
 
 ### Step 4: Enable Python plugin on the Eventhouse
@@ -137,15 +145,15 @@ The installer will:
 
 ### Running Simulations
 
-#### 1. Start Compressor Event Simulator
+#### 1. Start Compressor Event Simulator Notebook
 
 ```
-Location: Simulation/Compressor Event Simulator
+Location: Simulation/CompressorEventSimulator
 Duration: ~10 hours (simulation will end once sample data has been streamed)
 Data Generated: batches of industrial telemetry sent out every ~1 second
 ```
 
-1. Open the **Compressor Event Simulator** notebook
+1. Open the **CompressorEventSimulator** notebook
 2. Click **Run all**
 3. Monitor progress in the output
 
@@ -153,12 +161,12 @@ Data Generated: batches of industrial telemetry sent out every ~1 second
 #### 2. Start Vehicle Tracking Simulation
 
 ```
-Location: Simulation/Vehicle Telemetry Simulator
+Location: Simulation/VehicleTelemetrySimulator
 Duration: Continuous route playback
 Data Generated: GPS coordinates and operational vehicle telemetry every 5 seconds
 ```
 
-1. Open the **Vehicle Telemetry Simulator** notebook
+1. Open the **VehicleTelemetrySimulator** notebook
 2. Click **Run all**
 3. Vehicles will follow predefined routes with realistic GPS tracking
 
@@ -166,24 +174,24 @@ Data Generated: GPS coordinates and operational vehicle telemetry every 5 second
 
 #### Maps
 
-**Asset Status Map**
+**AssetStatus Map**
 - Visualize the health of assets across the enterprise
 - Visualize locations of service vehicles
 
-Access: Navigate to **Visualize and Chat** → **Asset Status**
+Access: Navigate to **VisualizeAndChat** → **AssetStatus**
 
 #### Real Time Dashboards
 
-**SCADA Telemetry + Anomalies Dashboard**
+**ScadaTelemetryAnomalies Dashboard**
 - Real-time asset monitoring
 - Sensor telemetry monitoring
 
-Access: Navigate to **Visualize and Chat** → **SCADA Telemetry + Anomalies**
+Access: Navigate to **VisualizeAndChat** → **ScadaTelemetryAnomalies**
 
 
 #### Power BI Reports
 
-**Time Series - Multivariate Anomaly Analysis**
+**TimeSeriesMultivariateAnomalyAnalysis**
 - Flexible time series analysis of data from multiple sensors
 - Single-variable anomaly detection for each time series
 - Multivariate anomaly detection
@@ -193,11 +201,11 @@ Access: Navigate to **Visualize and Chat** → **SCADA Telemetry + Anomalies**
 
 ### Using Activator (for automated alerts and actions)
 
-The **Multivariate Anomaly Activator** enables automatic alerts when trigger conditions are met.
+The **MultivariateAnomalyActivator** enables automatic alerts when trigger conditions are met.
 
 By default, the Activator is configured to generate alerts when multiple moderate severity multivariate anomalies have been detected or when individual high-severity anomalies have been detected. You may configure other triggers using the no-code authoring interface.
 
-Access: Navigate to **Act** → **Multivariate Anomaly Activator**
+Access: Navigate to **Act** → **MultivariateAnomalyActivator**
 
 ## 🔧 Troubleshooting
 If you encounter challenges with the solution, consider the following steps:

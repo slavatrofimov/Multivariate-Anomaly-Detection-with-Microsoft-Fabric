@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Reflex",
+    "displayName": "MultivariateAnomalyActivator"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "5d9b3031-7a26-bbc4-473e-1c96de20f6ac"
+  }
+}

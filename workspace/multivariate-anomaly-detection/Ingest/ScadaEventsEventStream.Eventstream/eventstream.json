@@ -1,0 +1,58 @@
+{
+  "sources": [
+    {
+      "id": "576d42a9-d1cf-4bee-b347-ff3b89d63fc1",
+      "name": "ScadaEvents-Source",
+      "type": "CustomEndpoint",
+      "properties": {}
+    }
+  ],
+  "destinations": [
+    {
+      "id": "836c2e97-8ff8-46fc-92e7-6445f75e91ea",
+      "name": "Eventhouse",
+      "type": "Eventhouse",
+      "properties": {
+        "dataIngestionMode": "ProcessedIngestion",
+        "workspaceId": "00000000-0000-0000-0000-000000000000",
+        "itemId": "7e5f836f-fbd4-98a5-4b93-408b3d6c2c84",
+        "databaseName": "MultivariateAnomalyDetectionEH",
+        "tableName": "ScadaTelemetryRaw",
+        "inputSerialization": {
+          "type": "Json",
+          "properties": {
+            "encoding": "UTF8"
+          }
+        }
+      },
+      "inputNodes": [
+        {
+          "name": "ScadaEventsEventStream-stream"
+        }
+      ],
+      "inputSchemas": [
+        {
+          "name": "ScadaEventsEventStream-stream",
+          "schema": {
+            "columns": []
+          }
+        }
+      ]
+    }
+  ],
+  "streams": [
+    {
+      "id": "f013e504-58d0-442a-9c5f-f2053b367d8b",
+      "name": "ScadaEventsEventStream-stream",
+      "type": "DefaultStream",
+      "properties": {},
+      "inputNodes": [
+        {
+          "name": "ScadaEvents-Source"
+        }
+      ]
+    }
+  ],
+  "operators": [],
+  "compatibilityLevel": "1.1"
+}
