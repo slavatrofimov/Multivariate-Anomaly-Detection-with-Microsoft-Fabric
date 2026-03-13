@@ -84,7 +84,7 @@ Note that this diagram represents a hypothetical real-world solution. This solut
 ## 📦 Prerequisites
 
 ### Required
-- **Microsoft Fabric Capacity**: F16 or higher recommended (Power BI Premium capacity is also supported). Note: this solution includes AI features that are not available on a Fabric Trial capacity. While you will be able to deploy the solution, to a workspace on a Trial capacity, some portions of this solution will not work properly.
+- **Microsoft Fabric Capacity**: F16 or higher recommended (Power BI Premium capacity is also supported). Note: this solution includes AI features that are not available on a Fabric Trial capacity. While you will be able to deploy the solution to a workspace on a Trial capacity, some portions of this solution will not work properly.
 - **Fabric Workspace**: A workspace with contributor or admin permissions
 - **Power BI License**: Power BI Pro or Power BI Premium Per User license.
 
@@ -105,7 +105,7 @@ Note that this diagram represents a hypothetical real-world solution. This solut
 5. Click **Apply**
 
 
-### Step 2: Download and the Solution Installer notebook
+### Step 2: Download the Solution Installer notebook
 1. Download the [Solution Installer notebook](/deploy/Solution%20Installer.ipynb) to a local folder on your computer.
 
 
@@ -204,7 +204,7 @@ If you encounter challenges with the solution, consider the following steps:
 1. Ensure that all pre-requisites have been fully satisfied
 1. Ensure that all installation steps have been completed in order
 1. Ensure that you have manually enabled the Python plugin on your Eventhouse (as described in the installation instructions above.)
-1. Ensure that simulation notebooks are actively running -- it may take a few minutes to simulated data generators to start producing simulated events.
+1. Ensure that simulation notebooks are actively running -- it may take a few minutes for simulated data generators to start producing simulated events.
 
 
 ### Getting Help
