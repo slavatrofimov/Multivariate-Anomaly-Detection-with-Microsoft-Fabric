@@ -153,23 +153,6 @@ result = launcher.run_notebook_synchronous(
 
 # CELL ********************
 
-# Run a notebook to perform remaining post-deployment activities, such as
-# Configure Credentials and refresh semantic models
-result = launcher.run_notebook_synchronous(
-    notebook_name="PostDeploymentConfig",
-    parameters={},
-    timeout_seconds=3600
-)
-
-# METADATA ********************
-
-# META {
-# META   "language": "python",
-# META   "language_group": "jupyter_python"
-# META }
-
-# CELL ********************
-
 # Move machine learning items to the desired folder
 move_item_to_folder(
         item_name="MVAD_Compressor_8K2",
