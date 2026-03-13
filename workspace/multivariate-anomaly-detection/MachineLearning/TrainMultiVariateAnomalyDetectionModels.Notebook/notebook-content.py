@@ -7,10 +7,6 @@
 # META     "name": "synapse_pyspark"
 # META   },
 # META   "dependencies": {
-# META     "environment": {
-# META       "environmentId": "e98a495b-e623-8e7d-4ec0-3a12d4c7ffdc",
-# META       "workspaceId": "00000000-0000-0000-0000-000000000000"
-# META     }
 # META   }
 # META }
 
