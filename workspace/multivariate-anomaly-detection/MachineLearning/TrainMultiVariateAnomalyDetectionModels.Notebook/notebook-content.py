@@ -34,7 +34,7 @@
 # CELL ********************
 
 # Install required packages
-!pip install time-series-anomaly-detector --quiet
+%pip install time-series-anomaly-detector==0.3.0 "mlflow<3.0.0"
 
 # METADATA ********************
 
