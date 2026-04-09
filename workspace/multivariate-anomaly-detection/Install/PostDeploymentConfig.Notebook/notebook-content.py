@@ -57,7 +57,7 @@ launcher.download_repository(
 # Initialize Fabric client and workspace
 client = fabric.FabricRestClient()
 workspace_id = fabric.get_workspace_id()
-repository_directory = f"./{extract_to}/workspace/"
+repository_directory = f"./{extract_to}/workspace/multivariate-anomaly-detection"
 
 # METADATA ********************
 
@@ -108,7 +108,7 @@ def deploy_item(item_name, item_type, item_relative_path, folder_name, endpoint,
 
 # Perform the deployment of the Asset Status Map
 deploy_item(item_name="AssetStatus", item_type="Map", item_relative_path="VisualizeAndChat/AssetStatus.Map", 
-               folder_name="VisualizeAndChat", endpoint="maps", repository_directory = launcher.repository_path,
+               folder_name="VisualizeAndChat", endpoint="maps", repository_directory = repository_directory,
                description="Asset Status Map for Multivariate Anomaly Detection",
                client = client, workspace_id = workspace_id)    
 
