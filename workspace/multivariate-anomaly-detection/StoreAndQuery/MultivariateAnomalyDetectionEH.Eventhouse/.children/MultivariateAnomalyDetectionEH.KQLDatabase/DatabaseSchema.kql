@@ -233,3 +233,20 @@ AssetAnomaliesMVAD
         on $left.AssetID == $right.asset
     | project-away asset
 }
+.create-or-alter function with (skipvalidation = "true") mapAssetsWithoutRecentAnomalies() {
+    let RecentAnomalies =
+        mvAssetAnomalies_2h
+        | where timestamp >= ago(2h);
+    Assets
+    | project
+        AssetID,
+        AssetType,
+        Manufacturer,
+        Model,
+        Latitude,
+        Longitude,
+        anomaly_count = 0,
+        max_severity = 0
+    | join kind=leftanti RecentAnomalies
+        on $left.AssetID == $right.asset
+}
