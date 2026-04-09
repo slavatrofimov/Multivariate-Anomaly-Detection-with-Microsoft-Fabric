@@ -201,3 +201,52 @@ AssetAnomaliesMVAD
 .alter table ScadaTelemetry policy update "[{\"IsEnabled\":true,\"Source\":\"ScadaTelemetryRaw\",\"Query\":\"ParseScadaTelemetry\",\"IsTransactional\":true,\"PropagateIngestionProperties\":false,\"ManagedIdentity\":null}]"
 .alter table AssetAnomaliesMVAD policy update "[{\"IsEnabled\":true,\"Source\":\"AssetAnomaliesMVADRaw\",\"Query\":\"ParseAssetAnomaliesMVAD\",\"IsTransactional\":true,\"PropagateIngestionProperties\":false,\"ManagedIdentity\":null}]"
 .alter table AssetAnomaliesMVADInterpretation policy update "[{\"IsEnabled\":true,\"Source\":\"AssetAnomaliesMVAD\",\"Query\":\"ParseAssetAnomaliesMVADInterpretation\",\"IsTransactional\":false,\"PropagateIngestionProperties\":false,\"ManagedIdentity\":null}]"
+.create-or-alter materialized-view mvAssetAnomalies_2h on table AssetAnomaliesMVAD {
+    AssetAnomaliesMVAD
+    | where is_anomaly == true
+    | summarize
+        anomaly_count = count(),
+        max_severity = max(severity)
+      by
+        asset,
+        bin(timestamp, 2h)
+}
+
+.create-or-alter function with (skipvalidation = "true") mapVehicles() {
+    VehicleTelemetryRaw
+| summarize arg_max(timestamp, lat, lon) by vehicle_id
+}
+
+.create-or-alter function with (skipvalidation = "true") mapAssetsWithAnomalies() {
+    let RecentAnomalies =
+        mvAssetAnomalies_2h
+        | where timestamp >= ago(2h);
+    Assets
+    | project
+        AssetID,
+        AssetType,
+        Manufacturer,
+        Model,
+        Latitude,
+        Longitude
+    | join kind=inner RecentAnomalies
+        on $left.AssetID == $right.asset
+    | project-away asset
+}
+.create-or-alter function with (skipvalidation = "true") mapAssetsWithoutRecentAnomalies() {
+    let RecentAnomalies =
+        mvAssetAnomalies_2h
+        | where timestamp >= ago(2h);
+    Assets
+    | project
+        AssetID,
+        AssetType,
+        Manufacturer,
+        Model,
+        Latitude,
+        Longitude,
+        anomaly_count = 0,
+        max_severity = 0
+    | join kind=leftanti RecentAnomalies
+        on $left.AssetID == $right.asset
+}
