@@ -33,8 +33,8 @@
 
 # CELL ********************
 
-%pip install faker --quiet
-%pip install azure-eventhub>=5.11.0--quiet
+!pip install faker --quiet
+!pip install azure-eventhub>=5.11.0--quiet
 
 # METADATA ********************
 

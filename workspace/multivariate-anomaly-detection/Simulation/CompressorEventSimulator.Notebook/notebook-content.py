@@ -30,7 +30,7 @@
 
 # CELL ********************
 
-pip install azure-eventhub>=5.11.0
+!pip install azure-eventhub>=5.11.0
 
 # METADATA ********************
 

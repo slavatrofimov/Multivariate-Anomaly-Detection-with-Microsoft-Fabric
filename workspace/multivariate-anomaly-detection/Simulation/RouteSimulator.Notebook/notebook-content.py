@@ -36,7 +36,7 @@
 
 # CELL ********************
 
-%pip install shapely --quiet
+!pip install shapely --quiet
 
 # METADATA ********************
 

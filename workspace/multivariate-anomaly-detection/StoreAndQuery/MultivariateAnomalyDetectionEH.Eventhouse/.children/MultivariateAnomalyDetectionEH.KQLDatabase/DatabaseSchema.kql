@@ -198,6 +198,29 @@ AssetAnomaliesMVAD
         correlation_change = correlation_changes.changed_values to typeof(double)
     | project-away correlation_changes, is_anomaly
  }
+.create-or-alter function with (folder = "Mapping", docstring = "Return a list of unhealthy assets", skipvalidation = "true") UnhealthyAssets() {
+    let AssetAnomalies = 
+    AssetAnomaliesMVAD
+    | where timestamp >= ago(2hours) and is_anomaly
+    | summarize anomaly_count = count(), max_severity = max(severity) by asset;
+    Assets
+    | project AssetID, AssetType, Manufacturer, Model, Latitude, Longitude = Longitude
+    | join kind=inner AssetAnomalies on $left.AssetID == $right.asset
+    | project-away asset
+}
+.create-or-alter function with (folder = "Mapping", docstring = "Return a list of healthy assets", skipvalidation = "true") HealthyAssets() {
+    let AssetAnomalies = 
+    AssetAnomaliesMVAD
+    | where timestamp >= ago(2hours) and is_anomaly
+    | summarize anomaly_count = count(), max_severity = max(severity) by asset;
+    Assets
+    | project AssetID, AssetType, Manufacturer, Model, Latitude, Longitude = Longitude, anomaly_count = 0, max_severity = 0
+    | join kind=leftanti AssetAnomalies on $left.AssetID == $right.asset
+}
+.create-or-alter function with (folder = "Mapping", docstring = "Return a list of vehicles with their current coordinates", skipvalidation = "true") VehicleCoordinates() {
+    VehicleTelemetryRaw
+    | summarize arg_max(timestamp, lat, lon) by vehicle_id
+}
 .alter table ScadaTelemetry policy update "[{\"IsEnabled\":true,\"Source\":\"ScadaTelemetryRaw\",\"Query\":\"ParseScadaTelemetry\",\"IsTransactional\":true,\"PropagateIngestionProperties\":false,\"ManagedIdentity\":null}]"
 .alter table AssetAnomaliesMVAD policy update "[{\"IsEnabled\":true,\"Source\":\"AssetAnomaliesMVADRaw\",\"Query\":\"ParseAssetAnomaliesMVAD\",\"IsTransactional\":true,\"PropagateIngestionProperties\":false,\"ManagedIdentity\":null}]"
 .alter table AssetAnomaliesMVADInterpretation policy update "[{\"IsEnabled\":true,\"Source\":\"AssetAnomaliesMVAD\",\"Query\":\"ParseAssetAnomaliesMVADInterpretation\",\"IsTransactional\":false,\"PropagateIngestionProperties\":false,\"ManagedIdentity\":null}]"

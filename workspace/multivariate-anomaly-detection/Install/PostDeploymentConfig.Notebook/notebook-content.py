@@ -107,8 +107,8 @@ def deploy_item(item_name, item_type, item_relative_path, folder_name, endpoint,
         print(f"✅ {item_name} {item_type} created successfully")
 
 # Perform the deployment of the Asset Status Map
-deploy_item(item_name="AssetStatus", item_type="Map", item_relative_path="VisualizeAndChat/AssetStatus.Map", 
-               folder_name="VisualizeAndChat", endpoint="maps", repository_directory = launcher.repository_path,
+deploy_item(item_name="AssetStatus", item_type="Map", item_relative_path="multivariate-anomaly-detection/VisualizeAndChat/AssetStatus.Map", 
+               folder_name="multivariate-anomaly-detection/VisualizeAndChat", endpoint="maps", repository_directory = launcher.repository_path,
                description="Asset Status Map for Multivariate Anomaly Detection",
                client = client, workspace_id = workspace_id)    
 
@@ -311,6 +311,8 @@ else:
 # META   "language_group": "jupyter_python"
 # META }
 
+# CELL ********************
+
 # MARKDOWN ********************
 
 # ## Manual Post-Deployment Tasks
@@ -318,10 +320,12 @@ else:
 # 
 # 1. Navigate to the **MultivareAnomalyDetectionEH** eventhouse in your workspace.
 # 2. Click on **Plugins** and enable the *Python 3.11.7 (preview)*
+#
+# Your automated solution deployment is complete!
+# ⚠️ Please be sure to refresh your browser window to reflect all newly-deployed items!
 # 
 # ## Next Steps
-# Your automated solution deployment is complete!
-# 
-# ⚠️ Please be sure to refresh your browser window to reflect all newly-deployed items!
+#
+# Navigate to the "Simulation" folder and run the following two notebooks: "CompressorEventSimulator" and "VehicleTelemetrySimulator".
 # 
 # Review the README document for details on running simulations and exploring your solution.

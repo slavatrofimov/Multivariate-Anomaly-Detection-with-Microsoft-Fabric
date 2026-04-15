@@ -1,88 +1,180 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/map/definition/1.0.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/map/definition/2.0.0/schema.json",
   "basemap": {
-    "options": "{\"style\":\"grayscale_light\",\"center\":[-99.8093075,32.7946519],\"zoom\":\"6\",\"pitch\":\"0\",\"bearing\":\"0\"}",
+    "options": {
+      "style": "grayscale_light",
+      "center": [
+        -99.4202125,
+        32.2260025
+      ],
+      "zoom": "6",
+      "pitch": "0",
+      "bearing": "0"
+    },
     "controls": {
       "zoom": true,
       "pitch": true,
       "compass": true,
-      "scale": true,
-      "traffic": null
+      "scale": true
     },
-    "backgroundColor": null,
     "theme": "innovate"
   },
-  "dataSources": {
-    "lakehouses": [],
-    "kqlDataBases": [
-      {
-        "workspaceId": "00000000-0000-0000-0000-000000000000",
-        "artifactId": "7e5f836f-fbd4-98a5-4b93-408b3d6c2c84"
-      }
-    ]
-  },
+  "dataSources": [
+    {
+      "itemType": "KqlDatabase",
+      "workspaceId": "00000000-0000-0000-0000-000000000000",
+      "itemId": "7e5f836f-fbd4-98a5-4b93-408b3d6c2c84"
+    }
+  ],
+  "iconSources": [],
   "layerSources": [
     {
-      "id": "7252dd9b-70a6-49ea-a326-0acf49fc5db7",
-      "name": "Map_Vehicles",
+      "id": "ea722da5-955c-45d8-bc20-65226c4b0f49",
+      "name": "HealthyAssets",
       "type": "kusto",
-      "options": null,
-      "parentArtifactId": "7e5f836f-fbd4-98a5-4b93-408b3d6c2c84",
-      "relativePath": null,
-      "querysetTabId": "00000000-0000-0000-0000-000000000000_c7b3bdde-e42f-47ac-90ee-31d7a6e4fb64",
-      "latitudeColumnName": "lat",
-      "longitudeColumnName": "lon",
-      "geometryColumnName": null,
+      "options": {
+        "cluster": true
+      },
+      "itemId": "7e5f836f-fbd4-98a5-4b93-408b3d6c2c84",
+      "refreshIntervalMs": 60000
+    },
+    {
+      "id": "ef2d8579-9cb4-49e3-85e1-bbadd449a232",
+      "name": "UnhealthyAssets",
+      "type": "kusto",
+      "options": {
+        "cluster": true
+      },
+      "itemId": "7e5f836f-fbd4-98a5-4b93-408b3d6c2c84",
+      "refreshIntervalMs": 60000
+    },
+    {
+      "id": "dc3eec31-dfa2-4752-8b79-0386546a6467",
+      "name": "Vehicles",
+      "type": "kusto",
+      "itemId": "7e5f836f-fbd4-98a5-4b93-408b3d6c2c84",
       "refreshIntervalMs": 5000
-    },
-    {
-      "id": "6acddba6-d256-40ca-8ba2-c47bc52a4c30",
-      "name": "Map_Assets",
-      "type": "kusto",
-      "options": "{\"cluster\":true}",
-      "parentArtifactId": "7e5f836f-fbd4-98a5-4b93-408b3d6c2c84",
-      "relativePath": null,
-      "querysetTabId": "00000000-0000-0000-0000-000000000000_577a82b4-8e91-432b-81b8-2f00a63d0033",
-      "latitudeColumnName": "Latitude",
-      "longitudeColumnName": "Longitude",
-      "geometryColumnName": null,
-      "refreshIntervalMs": 60000
-    },
-    {
-      "id": "e0ad5d58-15f3-4225-b803-2268d3a6b0ed",
-      "name": "Map_AssetsWithAnomalies",
-      "type": "kusto",
-      "options": null,
-      "parentArtifactId": "7e5f836f-fbd4-98a5-4b93-408b3d6c2c84",
-      "relativePath": null,
-      "querysetTabId": "00000000-0000-0000-0000-000000000000_253cd72f-0efe-4a30-90ba-dbaa7cbedfad",
-      "latitudeColumnName": "Latitude",
-      "longitudeColumnName": "Longitude",
-      "geometryColumnName": null,
-      "refreshIntervalMs": 60000
     }
   ],
   "layerSettings": [
     {
-      "id": "cb147c70-2e2c-4e13-8579-a31d104cd9bb",
-      "name": "Vehicles",
-      "sourceId": "7252dd9b-70a6-49ea-a326-0acf49fc5db7",
-      "sourceLayerId": null,
-      "options": "{\"color\":\"#0D2E25\",\"type\":\"vector\",\"visible\":true,\"bubbleOptions\":{\"color\":\"#0D2E25\"},\"lineOptions\":{\"strokeColor\":\"#0D2E25\"},\"polygonOptions\":{\"fillColor\":\"#0D2E25\"},\"polygonExtrusionOptions\":{\"fillColor\":\"#0D2E25\"},\"tooltipKeys\":[\"vehicle_id\"],\"dataLabelOptions\":{\"enabled\":true},\"dataLabelKeys\":[\"vehicle_id\"]}"
-    },
-    {
-      "id": "d826a218-8c50-442b-a041-7cd8f9ce9cae",
+      "id": "1b00c477-d0c8-442c-8572-5795105262d5",
       "name": "Unhealthy Assets",
-      "sourceId": "e0ad5d58-15f3-4225-b803-2268d3a6b0ed",
-      "sourceLayerId": null,
-      "options": "{\"color\":\"#F15628\",\"type\":\"vector\",\"visible\":true,\"bubbleOptions\":{\"color\":\"#F15628\",\"sizeType\":\"fixed\",\"fixedSize\":14,\"strokeColor\":\"#FCB714\"},\"lineOptions\":{\"strokeColor\":\"#F15628\"},\"polygonOptions\":{\"fillColor\":\"#F15628\"},\"polygonExtrusionOptions\":{\"fillColor\":\"#F15628\"},\"tooltipKeys\":[\"AssetID\",\"AssetType\",\"Manufacturer\",\"Model\",\"Latitude\",\"Longitude\",\"anomaly_count\",\"max_severity\"],\"dataLabelOptions\":{\"enabled\":true,\"size\":15},\"dataLabelKeys\":[\"AssetID\"]}"
+      "sourceId": "ef2d8579-9cb4-49e3-85e1-bbadd449a232",
+      "options": {
+        "color": "#CA5010",
+        "type": "vector",
+        "visible": true,
+        "pointLayerType": "marker",
+        "markerOptions": {
+          "iconOptions": {
+            "image": "1b00c477-d0c8-442c-8572-5795105262d5:Warning",
+            "opacity": 1
+          },
+          "icon": "Warning",
+          "fillColor": "#CA5010"
+        },
+        "bubbleOptions": {
+          "color": "#CA5010"
+        },
+        "lineOptions": {
+          "strokeColor": "#CA5010"
+        },
+        "polygonOptions": {
+          "fillColor": "#CA5010"
+        },
+        "polygonExtrusionOptions": {
+          "fillColor": "#CA5010"
+        }
+      },
+      "latitudeColumnName": "Latitude",
+      "longitudeColumnName": "Longitude"
     },
     {
-      "id": "d02de316-cb22-482b-a623-e064fcf11734",
+      "id": "ecf87fbb-0374-4a23-83ad-4e6fbba42bbe",
       "name": "Healthy Assets",
-      "sourceId": "6acddba6-d256-40ca-8ba2-c47bc52a4c30",
-      "sourceLayerId": null,
-      "options": "{\"color\":\"#35B895\",\"type\":\"vector\",\"visible\":true,\"bubbleOptions\":{\"color\":\"#35B895\"},\"lineOptions\":{\"strokeColor\":\"#35B895\"},\"polygonOptions\":{\"fillColor\":\"#35B895\"},\"polygonExtrusionOptions\":{\"fillColor\":\"#35B895\"}}"
+      "sourceId": "ea722da5-955c-45d8-bc20-65226c4b0f49",
+      "options": {
+        "color": "#13A10E",
+        "type": "vector",
+        "visible": true,
+        "bubbleOptions": {
+          "color": "#13A10E"
+        },
+        "markerOptions": {
+          "fillColor": "#13A10E",
+          "iconOptions": {
+            "image": "ecf87fbb-0374-4a23-83ad-4e6fbba42bbe:Square",
+            "opacity": 0.75
+          }
+        },
+        "lineOptions": {
+          "strokeColor": "#13A10E"
+        },
+        "polygonOptions": {
+          "fillColor": "#13A10E"
+        },
+        "polygonExtrusionOptions": {
+          "fillColor": "#13A10E"
+        },
+        "pointLayerType": "marker",
+        "tooltipKeys": [
+          "AssetID",
+          "AssetType",
+          "Manufacturer",
+          "Model",
+          "anomaly_count",
+          "max_severity"
+        ]
+      },
+      "latitudeColumnName": "Latitude",
+      "longitudeColumnName": "Longitude"
+    },
+    {
+      "id": "a501e9ef-c2fc-487f-8e37-f7db0e21fac1",
+      "name": "Vehicles",
+      "sourceId": "dc3eec31-dfa2-4752-8b79-0386546a6467",
+      "options": {
+        "color": "#014375",
+        "type": "vector",
+        "visible": true,
+        "pointLayerType": "marker",
+        "markerOptions": {
+          "iconOptions": {
+            "image": "a501e9ef-c2fc-487f-8e37-f7db0e21fac1:VehicleTruckProfile"
+          },
+          "icon": "VehicleTruckProfile",
+          "fillColor": "#014375",
+          "size": 29
+        },
+        "tooltipKeys": [
+          "vehicle_id",
+          "lat",
+          "lon"
+        ],
+        "dataLabelOptions": {
+          "enabled": true,
+          "placement": "point",
+          "anchor": "left"
+        },
+        "dataLabelKeys": [
+          "vehicle_id"
+        ],
+        "bubbleOptions": {
+          "color": "#014375"
+        },
+        "lineOptions": {
+          "strokeColor": "#014375"
+        },
+        "polygonOptions": {
+          "fillColor": "#014375"
+        },
+        "polygonExtrusionOptions": {
+          "fillColor": "#014375"
+        }
+      },
+      "latitudeColumnName": "lat",
+      "longitudeColumnName": "lon"
     }
   ]
 }
