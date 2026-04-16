@@ -7,6 +7,10 @@
 # META     "name": "synapse_pyspark"
 # META   },
 # META   "dependencies": {
+# META     "environment": {
+# META       "environmentId": "73bac513-5cb1-978b-4fe4-cb6a5d23e50c",
+# META       "workspaceId": "00000000-0000-0000-0000-000000000000"
+# META     }
 # META   }
 # META }
 
@@ -16,7 +20,7 @@
 # This notebook trains multi-variate anomaly detection models for multiple centrifugal compressor assets (8K2 and MBZ).
 # 
 # ## Workflow:
-# 1. Install required packages
+# 1. Import required libraries
 # 1. Configure asset-specific parameters and feature columns
 # 1. For each asset:
 #    - Retrieve telemetry data from KQL Database
@@ -29,18 +33,6 @@
 
 # CELL ********************
 
-# Install required packages
-!pip install time-series-anomaly-detector==0.3.0 "mlflow<3.0.0"
-
-# METADATA ********************
-
-# META {
-# META   "language": "python",
-# META   "language_group": "synapse_pyspark"
-# META }
-
-# CELL ********************
-
 #Import required libraries
 import numpy as np
 import pandas as pd
@@ -49,8 +41,6 @@ from anomaly_detector import MultivariateAnomalyDetector
 from pyspark.sql.functions import col
 from pyspark.sql import Row
 from datetime import datetime
-
-#Import relevant libraries
 import sempy.fabric as fabric
 
 # METADATA ********************
@@ -172,10 +162,11 @@ for asset_id, config in asset_configs.items():
     print(f"  - Retrieved {sdf.count()} rows")
 
     # Step 2: Define feature columns and create a Pandas dataframe
+    print(f"\nStep 2: Defining feature columns and building a dataframe") 
     feature_columns = [col for col in sdf.columns if col != 'timestamp']
     df = sdf.toPandas()
     df = df.set_index('timestamp')
-    
+
     # Step 3: Split data into training and testing sets
     print(f"\nStep 3: Splitting data (cutoff: {training_cutoff_date})...")
     
@@ -186,7 +177,7 @@ for asset_id, config in asset_configs.items():
     print(f"  - Total samples: {len(df)}")
     print(f"  - Training samples: {train_len}")
     print(f"  - Testing samples: {test_len}")
-    
+
     # Step 4: Train the model
     print(f"\nStep 4: Training multi-variate anomaly detection model...")
     print(f"  - Sliding window: {sliding_window}")
@@ -202,9 +193,14 @@ for asset_id, config in asset_configs.items():
     # Fit the model
     model.fit(train_df, params=params)
     
+    # Prepare input_example and model signature
+    input_example = train_df.iloc[:300]
+    from mlflow.models.signature import infer_signature
+    signature = infer_signature(input_example, model.predict(data=input_example, context=None))
+    
     # Step 5: Log model and parameters to MLflow
     print(f"\nStep 5: Logging model to MLflow...")
-    
+
     with mlflow.start_run(run_name=f"Training_{asset_id}_{pd.Timestamp.now().strftime('%Y%m%d_%H%M%S')}"):
         # Log parameters
         mlflow.log_params(params)
@@ -226,6 +222,8 @@ for asset_id, config in asset_configs.items():
             python_model=model,
             artifact_path="mvad_artifacts",
             registered_model_name=model_name,
+            signature=signature,
+            input_example=input_example
         )
         
         model_info_dict[asset_id] = model_info
@@ -259,6 +257,7 @@ for asset_id, config in asset_configs.items():
     option("tableCreateOptions", "CreateIfNotExist").mode("Append").save()
     
     print(f"\n✅ Completed training for asset: {asset_id}\n")
+
 
 # METADATA ********************
 

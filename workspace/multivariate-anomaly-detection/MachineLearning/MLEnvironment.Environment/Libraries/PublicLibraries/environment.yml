@@ -1,0 +1,4 @@
+dependencies:
+  - pip:
+      - mlflow==2.22.4
+      - time-series-anomaly-detector==0.3.0
