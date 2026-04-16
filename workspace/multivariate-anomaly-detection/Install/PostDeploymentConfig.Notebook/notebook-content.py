@@ -107,10 +107,13 @@ def deploy_item(item_name, item_type, item_relative_path, folder_name, endpoint,
         print(f"✅ {item_name} {item_type} created successfully")
 
 # Perform the deployment of the Asset Status Map
-deploy_item(item_name="AssetStatus", item_type="Map", item_relative_path="multivariate-anomaly-detection/VisualizeAndChat/AssetStatus.Map", 
-               folder_name="VisualizeAndChat", endpoint="maps", repository_directory = repository_directory,
-               description="Asset Status Map for Multivariate Anomaly Detection",
-               client = client, workspace_id = workspace_id)    
+try:
+    deploy_item(item_name="AssetStatus", item_type="Map", item_relative_path="multivariate-anomaly-detection/VisualizeAndChat/AssetStatus.Map", 
+                   folder_name="VisualizeAndChat", endpoint="maps", repository_directory = repository_directory,
+                   description="Asset Status Map for Multivariate Anomaly Detection",
+                   client = client, workspace_id = workspace_id)
+except Exception as e:
+    print(f"⚠️ Warning: Failed to deploy AssetStatus Map: {e}")    
 
 # METADATA ********************
 
@@ -311,8 +314,6 @@ else:
 # META   "language_group": "jupyter_python"
 # META }
 
-# CELL ********************
-
 # MARKDOWN ********************
 
 # Your automated solution deployment is complete!
@@ -322,7 +323,7 @@ else:
 # ## Manual Post-Deployment Tasks
 # **Enable Python plugin on the Eventhouse**
 # 
-# 1. Navigate to the **MultivareAnomalyDetectionEH** eventhouse in your workspace.
+# 1. Navigate to the **MultivariateAnomalyDetectionEH** eventhouse in your workspace.
 # 2. Click on **Plugins** and enable the *Python 3.11.7 (preview)*
 #
 # 

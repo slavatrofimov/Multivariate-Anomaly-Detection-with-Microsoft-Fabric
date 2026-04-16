@@ -1,4 +1,5 @@
 dependencies:
   - pip:
       - mlflow==2.22.4
+      - protobuf==4.25.3
       - time-series-anomaly-detector==0.3.0
