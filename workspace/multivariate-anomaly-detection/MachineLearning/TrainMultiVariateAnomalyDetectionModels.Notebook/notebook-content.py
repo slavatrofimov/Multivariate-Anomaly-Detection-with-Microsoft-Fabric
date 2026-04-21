@@ -194,9 +194,20 @@ for asset_id, config in asset_configs.items():
     model.fit(train_df, params=params)
     
     # Prepare input_example and model signature
+    # Build an explicit signature using only MLflow-supported types.
+    # infer_signature() would assign 'any' to complex output columns (e.g. interpretation),
+    # which is not recognised by older MLflow versions running in the KQL Python sandbox.
     input_example = train_df.iloc[:300]
-    from mlflow.models.signature import infer_signature
-    signature = infer_signature(input_example, model.predict(data=input_example, context=None))
+    from mlflow.models.signature import ModelSignature
+    from mlflow.types.schema import Schema, ColSpec
+    input_schema = Schema([ColSpec("double", col) for col in feature_columns])
+    output_schema = Schema([
+        ColSpec("boolean", "is_anomaly"),
+        ColSpec("double",  "score"),
+        ColSpec("double",  "severity"),
+        ColSpec("string",  "interpretation"),   # serialise complex type as string
+    ])
+    signature = ModelSignature(inputs=input_schema, outputs=output_schema)
     
     # Step 5: Log model and parameters to MLflow
     print(f"\nStep 5: Logging model to MLflow...")
